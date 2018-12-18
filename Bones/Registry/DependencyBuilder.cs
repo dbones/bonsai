@@ -11,23 +11,23 @@
             _dependency = dependency;
         }
 
-        public RegistrationDependency UseValue(object value)
+        public void UseValue(object value)
         {
             _dependency.Value = value;
-            return _dependency;
         }
 
-        public RegistrationDependency Named(string name)
+        /// <summary>
+        /// the named dependency to associate with this
+        /// </summary>
+        public void Named(string name)
         {
             _dependency.Named = name;
-            return _dependency;
         }
 
-        public RegistrationDependency Use<T>(string named = null) where T : class
+        public void Use<T>(string named = null) where T : class
         {
             _dependency.ImplementedType = typeof(T).GetTypeInfo();
             _dependency.Named = named;
-            return _dependency;
         }
     }
 }

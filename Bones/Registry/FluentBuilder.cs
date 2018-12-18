@@ -94,6 +94,15 @@
             return this;
         }
 
+        public FluentBuilder<TService> DependsOn(Action<For> @for)
+        {
+            var dependency = new RegistrationDependency();
+            var config = new For(dependency);
+            @for(config);
+            Registration.Dependencies.Add(dependency);
+            return this;
+        }
+
         public FluentBuilder<TService> UsingInstance(TService instance)
         {
             Registration.Instance = instance;

@@ -18,9 +18,4 @@
       <ProjectReference Include="..\Bones\Bones.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Resolving\Dependencies" />
-      <Folder Include="Resolving\Generics" />
-    </ItemGroup>
-
 </Project>

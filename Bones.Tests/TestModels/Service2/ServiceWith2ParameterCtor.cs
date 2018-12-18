@@ -4,7 +4,7 @@
     using Repository;
 
     /// <summary>
-    ///     has method injection which has 2 injectables
+    ///     has ctor  injection which has 2 injectables
     /// </summary>
     public class ServiceWith2ParameterCtor : IService2
     {

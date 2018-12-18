@@ -4,7 +4,12 @@
 
     public class For
     {
-        private RegistrationDependency _dependency = new RegistrationDependency();
+        private RegistrationDependency _dependency;
+
+        public For(RegistrationDependency dependency)
+        {
+            _dependency = dependency;
+        }
 
         public DependencyBuilder Property(string name)
         {
