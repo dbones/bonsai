@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bones", "Bones\Bones.csproj", "{023E8D2B-ADDA-444F-82E8-A36F4ABFCF43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bones.Tests", "Bones.Tests\Bones.Tests.csproj", "{71BB7ACD-8758-4FCA-B51B-F78D717D32ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{023E8D2B-ADDA-444F-82E8-A36F4ABFCF43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{023E8D2B-ADDA-444F-82E8-A36F4ABFCF43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{023E8D2B-ADDA-444F-82E8-A36F4ABFCF43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{023E8D2B-ADDA-444F-82E8-A36F4ABFCF43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71BB7ACD-8758-4FCA-B51B-F78D717D32ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71BB7ACD-8758-4FCA-B51B-F78D717D32ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71BB7ACD-8758-4FCA-B51B-F78D717D32ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71BB7ACD-8758-4FCA-B51B-F78D717D32ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
