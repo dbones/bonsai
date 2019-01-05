@@ -4,7 +4,6 @@ namespace Bones.Tests.Resolving.MissingRegistrations
     using Exceptions;
     using NUnit.Specifications;
     using PowerAssert;
-    using TestModels;
     using TestModels.Logger;
     using TestModels.Service2;
 

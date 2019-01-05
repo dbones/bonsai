@@ -8,24 +8,10 @@
         /// <summary>
         /// resolves the service into an instance of the target type
         /// </summary>
-        /// <param name="service">the required service</param>
-        /// <returns>instance of the service</returns>
-        object Resolve(Type service);
-
-        /// <summary>
-        /// resolves the service into an instance of the target type
-        /// </summary>
         /// <param name="serviceName">the name of the service</param>
         /// <param name="service">the required service</param>
         /// <returns>instance of the service</returns>
-        object Resolve(string serviceName, Type service);
-
-        /// <summary>
-        /// resolves the service into an instance of the target type
-        /// </summary>
-        /// <typeparam name="TService">the required service</typeparam>
-        /// <returns>instance of the service</returns>
-        TService Resolve<TService>();
+        object Resolve(Type service, string serviceName = "default");
 
         /// <summary>
         /// resolves the service into an instance of the target type
@@ -33,7 +19,7 @@
         /// <typeparam name="TService">the required service</typeparam>
         /// <param name="serviceName">the name of the service</param>
         /// <returns>instance of the service</returns>
-        TService Resolve<TService>(string serviceName);
+        TService Resolve<TService>(string serviceName = "default");
 
         
     }

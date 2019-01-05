@@ -6,9 +6,9 @@
     ///     has a ctor with a generic parameter which is the same as the Repo
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class InMemoryRepositoryInheritsWithPropAndCtor<T> : RepositoryWithProp<T>, IMemoryRepository<T>
+    public class InMemoryRespositoryWith1ParamGenericCtor<T> : RepositoryWith1ParamProp<T>, IMemoryRepository<T>
     {
-        public InMemoryRepositoryInheritsWithPropAndCtor(IDataStore<T> dataStore)
+        public InMemoryRespositoryWith1ParamGenericCtor(IDataStore<T> dataStore)
         {
             DataStore = dataStore;
         }

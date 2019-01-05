@@ -1,17 +1,41 @@
 ﻿namespace Bones
 {
+    using System;
     using System.Reflection;
 
     public class RegistrationDependency
     {
+        
+        /// <summary>
+        /// the name of the parameter which we are providing information on
+        /// </summary>
         public string ParameterName { get; set; }
-        public TypeInfo RequiredType { get; set; }
+        /// <summary>
+        /// the type we are required to override (i.e. for the ILogger do this please)
+        /// </summary>
+        public Type RequiredType { get; set; }
+        /// <summary>
+        /// the name of the property, method which we are providing information on
+        /// </summary>
         public string AttributeName { get; set; }
+        
 
-        public TypeInfo ImplementedType { get; set; }
+        /// <summary>
+        /// the type we want to provide (ensure we have registered it)
+        /// </summary>
+        public Type ImplementedType { get; set; }
+        /// <summary>
+        /// the implementations named instance
+        /// </summary>
         public string Named { get; set; }
+        /// <summary>
+        /// an instance/value to use
+        /// </summary>
         public object Value { get; set; }
 
-        //public InjectType Type { get; set; }
+        /// <summary>
+        /// the injection we are going to apply
+        /// </summary>
+        public InjectOn InjectOn { get; set; }
     }
 }

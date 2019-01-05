@@ -1,11 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Factories" />
+      <Compile Remove="Factories\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Factories\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Factories\**" />
     </ItemGroup>
 
 </Project>

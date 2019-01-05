@@ -1,8 +1,11 @@
 ﻿namespace Bones
 {
     using System;
+    using System.Data;
+    using System.Linq;
     using System.Reflection;
-    
+    using Exceptions;
+
     public class FluentBuilder
     {
         protected internal readonly Registration Registration;
@@ -21,7 +24,7 @@
                 //TODO: Exceptions
             }
 
-            Registration.Types.TryAdd(name, typeof(TContract).GetTypeInfo());
+            Registration.Types.Add(new ServiceKey(typeof(TContract).GetTypeInfo(), name));
             return this;
         }
         
@@ -33,7 +36,7 @@
                 //TODO: Exceptions
             }
 
-            Registration.Types.TryAdd(name, contract);
+            Registration.Types.Add(new ServiceKey(contract, name));
             return this;
         }
 
@@ -71,13 +74,18 @@
 
         public FluentBuilder<TService> As<TContract>(string name = "default") where TContract : class
         {
-            var contract = typeof(TContract).GetTypeInfo();
+            var contract = typeof(TContract);
             if (!contract.IsAssignableFrom(Registration.ImplementedType))
             {
-                //TODO: Exceptions
+                throw new ServiceDoesNotImplementContractException(contract, Registration.ImplementedType);
             }
 
-            Registration.Types.TryAdd(name, typeof(TContract).GetTypeInfo());
+            if (Registration.Types.Any(serviceKey=> serviceKey.ServiceName == name))
+            {
+                throw new DuplicateNamedContractException(contract, name);
+            }
+            
+            Registration.Types.Add(new ServiceKey(typeof(TContract).GetTypeInfo(), name));
             return this;
         }
 

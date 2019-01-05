@@ -15,11 +15,11 @@
     /// </summary>
     public class ServiceWithMethod : IService2
     {
-        public ILogger Logger { get; }
+        public ILogger Logger { get; private set; }
 
         public void SetLogger(ILogger logger)
         {
-            logger = logger;
+            Logger = logger;
         }
     }
 }
