@@ -7,7 +7,6 @@ namespace Bones.Tests.Resolving.Generics
     using TestModels.Logger;
     using TestModels.Repository;
     using TestModels.Service2;
-    using ILogger = NUnit.Framework.Internal.ILogger;
 
     [Subject("Container")]
     public class When_resolving_a_service_with_generic_dependencies : ContextSpecification

@@ -1,10 +1,10 @@
 ﻿namespace Bones
 {
-    public class Singleton : ILifeSpan
+    public class Singleton : Named
     {
-        public object Resolve(Scope currentScope, Contract contract)
+        public Singleton()
         {
-            throw new System.NotImplementedException();
+            Name = "singleton";
         }
     }
 }

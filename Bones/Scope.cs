@@ -1,45 +1,56 @@
 ﻿namespace Bones
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Reflection.Metadata.Ecma335;
+    using System.Security;
+    using System.Threading;
     using Exceptions;
 
 
-    public interface IInternalScopeApi
+    public interface IAdvancedScope : IScope
     {
         ContractRegistry Contracts { get; }
         
+        Cache<string, Instance> InstanceCache { get; }
+        
+        Stack<Instance> Tracked { get; }
+
         string Name { get; }
 
         object Resolve(ServiceKey serviceKey);
-    }
-    
-    public class Scope : IScope, IInternalScopeApi
-    {
-        //private List<InstanceEntry> _nonReuseableEntries;
-        //private IDictionary<string, InstanceEntry> _instanceEntries;
-        private Scope _parentScope;
 
+        Scope ParentScope { get; }
+    }
+
+    public class Scope : IAdvancedScope
+    {
         public Scope(ContractRegistry contractRegistry, Scope parentScope = null, string name = "scope")
         {
             Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
-            _parentScope = parentScope;
-            //_instanceEntries = new Dictionary<string, InstanceEntry>(8);
-            //_nonReuseableEntries = new List<InstanceEntry>(8);
+            ParentScope = parentScope;
+            InstanceCache = new Cache<string, Instance>();
+            Tracked = new Stack<Instance>(10);
         }
 
+        public Cache<string, Instance> InstanceCache { get; }
+
+        public Stack<Instance> Tracked { get; }
+
         public ContractRegistry Contracts { get; }
+        public Scope ParentScope { get; }
         public string Name { get; }
-        
+
         public object Resolve(ServiceKey serviceKey)
         {
             var contract = Contracts.GetContract(serviceKey);
             return contract.LifeSpan.Resolve(this, contract);
         }
-        
+
         public TService Resolve<TService>(string serviceName = "default")
         {
             return (TService) Resolve(new ServiceKey(typeof(TService), serviceName));
@@ -53,7 +64,10 @@
 
         public void Dispose()
         {
-            
+            while (Tracked.TryPop(out var instance))
+            {
+                instance.Contract.DisposeInstance(instance.Value);
+            }
         }
 
         public IScope CreateScope(string name = "scope")
@@ -61,8 +75,187 @@
             return new Scope(Contracts, this);
         }
     }
+
+    public class Instance
+    {
+        public Contract Contract { get; set; }
+        public object Value { get; set; }
+    }
     
-    
+
+    public class Cache<TKey,TValue> where TValue : class
+    {
+        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
+        private readonly Dictionary<TKey, TValue> _innerCache;
+
+        public Cache(int capacity)
+        {
+            _innerCache = new Dictionary<TKey,TValue>(capacity);
+        }
+
+        public Cache()
+        {
+            _innerCache = new Dictionary<TKey,TValue>();
+        }
+        
+        public int Count => _innerCache.Count;
+
+        public TValue Get(TKey key)
+        {
+            _cacheLock.EnterReadLock();
+            try
+            {
+                return _innerCache.TryGetValue(key, out var v) 
+                    ? v 
+                    : null;
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
+        }
+
+        public void Add(TKey key, TValue value)
+        {
+            _cacheLock.EnterWriteLock();
+            try
+            {
+                _innerCache.Add(key, value);
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
+            }
+        }
+
+        public bool AddWithTimeout(TKey key, TValue value, int timeout)
+        {
+            if (_cacheLock.TryEnterWriteLock(timeout))
+            {
+                try
+                {
+                    _innerCache.Add(key, value);
+                }
+                finally
+                {
+                    _cacheLock.ExitWriteLock();
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public TValue GetOrAdd(TKey key, Func<TValue> value)
+        {
+            _cacheLock.EnterUpgradeableReadLock();
+            try
+            {
+                TValue result;
+                if (_innerCache.TryGetValue(key, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    _cacheLock.EnterWriteLock();
+                    try
+                    {
+                        var v = value();
+                        _innerCache.Add(key, v);
+                        return v;
+                    }
+                    finally
+                    {
+                        _cacheLock.ExitWriteLock();
+                    }
+                }
+            }
+            finally
+            {
+                _cacheLock.ExitUpgradeableReadLock();
+            }
+        }
+
+        public AddOrUpdateStatus AddOrUpdate(TKey key, TValue value)
+        {
+            _cacheLock.EnterUpgradeableReadLock();
+            try
+            {
+                TValue result;
+                if (_innerCache.TryGetValue(key, out result))
+                {
+                    if (result.Equals(value))
+                    {
+                        return AddOrUpdateStatus.Unchanged;
+                    }
+                    else
+                    {
+                        _cacheLock.EnterWriteLock();
+                        try
+                        {
+                            _innerCache[key] = value;
+                        }
+                        finally
+                        {
+                            _cacheLock.ExitWriteLock();
+                        }
+
+                        return AddOrUpdateStatus.Updated;
+                    }
+                }
+                else
+                {
+                    _cacheLock.EnterWriteLock();
+                    try
+                    {
+                        _innerCache.Add(key, value);
+                    }
+                    finally
+                    {
+                        _cacheLock.ExitWriteLock();
+                    }
+
+                    return AddOrUpdateStatus.Added;
+                }
+            }
+            finally
+            {
+                _cacheLock.ExitUpgradeableReadLock();
+            }
+        }
+
+        public void Delete(TKey key)
+        {
+            _cacheLock.EnterWriteLock();
+            try
+            {
+                _innerCache.Remove(key);
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
+            }
+        }
+
+        public enum AddOrUpdateStatus
+        {
+            Added,
+            Updated,
+            Unchanged
+        };
+
+        ~Cache()
+        {
+            _cacheLock?.Dispose();
+        }
+    }
+
+
     /// <summary>
     /// a unique key for a service
     /// </summary>
@@ -98,5 +291,4 @@
             return _hash;
         }
     }
-    
 }

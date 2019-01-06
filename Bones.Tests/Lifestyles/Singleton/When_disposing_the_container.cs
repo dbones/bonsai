@@ -5,7 +5,6 @@ namespace Bones.Tests.Lifestyles.Singleton
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service1;
-    using ILogger = NUnit.Framework.Internal.ILogger;
     using Singleton = Bones.Singleton;
     using Transient = Bones.Transient;
 

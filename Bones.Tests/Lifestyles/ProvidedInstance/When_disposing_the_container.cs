@@ -4,8 +4,7 @@ namespace Bones.Tests.Lifestyles.ProvidedInstance
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
-    using TestModels.Service1;
-    using ILogger = NUnit.Framework.Internal.ILogger;
+    using TestModels.Service1;    
     using Singleton = Bones.Singleton;
     using Transient = Bones.Transient;
 

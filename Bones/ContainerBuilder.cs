@@ -48,8 +48,13 @@
         public CreateInstance CreateInstance { get; set; }
 
         public HashSet<ServiceKey> ServiceKeys { get; set; }
+        
+        public DisposeInstance DisposeInstance { get; set; }
+        
 
         public ILifeSpan LifeSpan { get; set; }
+
+        public string Id { get; set; } = Guid.NewGuid().ToString();
     }
 
 
@@ -57,16 +62,40 @@
     {
         public IEnumerable<Contract> Create(IEnumerable<RegistrationContext> contexts)
         {
+            Action<object> disposal = instance =>  ((IDisposable) instance).Dispose();
+            Action<object> noopDisposal = instance =>  {};
+            
             foreach (var context in contexts)
             {
-                yield return new Contract()
+                var contract = new Contract()
                 {
                     LifeSpan = context.Registration.ScopedTo,
                     ServiceKeys = context.Registration.Types,
-                    CreateInstance = Create(context)
+                    CreateInstance = Create(context),
                 };
+
+                if (typeof(IDisposable).IsAssignableFrom(context.ImplementedType))
+                {
+                    contract.DisposeInstance = Disposal;
+                }
+                else
+                {
+                    contract.DisposeInstance = NoOpDisposal;
+                }
+
+                yield return contract;
             }
         }
+
+        void NoOpDisposal(object instance)
+        {
+        }
+
+        void Disposal(object instance)
+        {
+            ((IDisposable) instance).Dispose();
+        }
+
 
 
         CreateInstance Create(RegistrationContext context)
@@ -138,6 +167,7 @@
 
 
     public delegate object CreateInstance(Scope currentScope);
+    public delegate void DisposeInstance(object instance);
 
     public class InjectionPlanner
     {
@@ -256,30 +286,6 @@
         }
 
 
-        IEnumerable<ServiceKey> GetAllServiceKeys(Registration registration)
-        {
-            var isGenericDescription = registration.ImplementedType.IsGenericType
-                                       && registration.ImplementedType.GenericTypeArguments.Any();
-            var hasAnInstance = registration.Instance != null;
-
-            if (isGenericDescription || hasAnInstance)
-            {
-                yield break;
-            }
-
-
-            //only interested in non open generics and non generics.
-            Func<Type, bool> filter = type => !type.IsGenericType || type.GenericTypeArguments.Any();
-
-            foreach (var registrationType in registration.Types.Where(x => filter(x.Service)))
-            {
-                yield return registrationType;
-            }
-
-
-            // foreach (var serviceKey in GetServiceKeys(registration)) yield return serviceKey;
-        }
-
         private void GetServiceKeys(
             Registration registration,
             Type registrationType = null)
@@ -319,12 +325,42 @@
             //get the actual constructor
             if (registrationType != null && registrationType.IsGenericType)
             {
-                throw new NotImplementedException();
-                //constructor.Method = (ConstructorInfo) registration.Constructor;
+                var ctorParams = registration.Constructor.GetParameters();
+                
+                var type = registration.ImplementedType.MakeGenericType(registrationType.GenericTypeArguments);
+                var c = type.GetConstructors()
+                    .Where(x => x.GetParameters().Length == ctorParams.Length)
+                    .Where(x =>
+                    {
+                        var candidateParams = x.GetParameters();
+                        for (int i = 0; i < candidateParams.Length; i++)
+                        {
+                            var parameter = ctorParams[i].ParameterType;
+                            var candidateParameter = candidateParams[i].ParameterType;
+
+                            if (parameter == candidateParameter)
+                            {
+                                continue;
+                            }
+
+                            if (parameter.IsGenericType && candidateParameter.IsGenericType
+                                && parameter.GetGenericTypeDefinition() == candidateParameter.GetGenericTypeDefinition())
+                            {
+                                continue;
+                            }
+
+                            return false;
+                        }
+
+                        return true;
+                    });
+                
+                constructor.Method = ((ConstructorInfo) registration.Constructor);
             }
             else
             {
                 constructor.Method = (ConstructorInfo) registration.Constructor;
+                context.ImplementedType = registration.ImplementedType;
                 //ctorInfo = ;
             }
 

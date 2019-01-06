@@ -4,7 +4,6 @@ namespace Bones.Tests.Lifestyles.Transient
     using PowerAssert;
     using TestModels.Logger;
     using TestModels.Service1;
-    using ILogger = NUnit.Framework.Internal.ILogger;
     using Transient = Bones.Transient;
 
     [Subject("TransientLifeScope")]
