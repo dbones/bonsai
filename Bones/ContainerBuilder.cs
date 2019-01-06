@@ -181,7 +181,6 @@
 
         public void Plan()
         {
-            //var r = registrations.ToList();
             foreach (var registration in _registrations)
             {
                 _constructorPlanner.Plan(registration);
@@ -213,6 +212,11 @@
                     .OrderByDescending(x => x.Score)
                     .Select(x => x.Constructor)
                     .FirstOrDefault();
+
+                if (registration.Constructor == null) 
+                {
+                    throw new CannotFindSupportableConstructorException(registration.ImplementedType);    
+                }
             }
 
             int Score(MethodBase method, Registration registration)
@@ -294,13 +298,6 @@
                 ? $"{registration.Id} {registration.ImplementedType.MakeGenericType(registrationType.GenericTypeArguments)}"
                 : $"{registration.Id} {registration.ImplementedType.FullName}";
 
-//            var gotContextForRegistrationType = registrationType != null
-//                                                && registrationType.IsGenericType
-//                                                && _contexts.ContainsKey(hash);
-//
-//            var gotContextForRegistration = !registration.ImplementedType.IsGenericType
-//                                            && _contexts.ContainsKey(hash);
-
             //already processed
             var haveRegistration = _contexts.ContainsKey(hash);
             if (haveRegistration)
@@ -350,17 +347,16 @@
                         }
 
                         return true;
-                    });
+                    }).FirstOrDefault();
                 
-                constructor.Method = ((ConstructorInfo) registration.Constructor);
+                constructor.Method = c;
+                context.ImplementedType = type;
             }
             else
             {
                 constructor.Method = (ConstructorInfo) registration.Constructor;
                 context.ImplementedType = registration.ImplementedType;
-                //ctorInfo = ;
             }
-
 
             var parameters = constructor.Method.GetParameters();
             foreach (var parameter in parameters)
