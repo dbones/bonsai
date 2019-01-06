@@ -2,13 +2,13 @@ namespace Bones.Tests.Resolving.MissingRegistrations
 {
     using System;
     using Exceptions;
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels.Logger;
     using TestModels.Service2;
 
     [Subject("Container")]
-    public class When_resolving_an_unregistered_service : ContextSpecification
+    public class When_resolving_an_unregistered_service 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

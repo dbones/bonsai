@@ -1,6 +1,6 @@
 namespace Bones.Tests.Lifestyles.Singleton
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
@@ -9,7 +9,7 @@ namespace Bones.Tests.Lifestyles.Singleton
     using Transient = Bones.Transient;
 
     [Subject("SingletonLifeScope")]
-    public class When_disposing_the_scope : ContextSpecification
+    public class When_disposing_the_scope 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

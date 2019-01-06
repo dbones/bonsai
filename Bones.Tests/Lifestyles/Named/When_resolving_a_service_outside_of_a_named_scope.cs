@@ -2,7 +2,7 @@ namespace Bones.Tests.Lifestyles.Named
 {
     using System;
     using Exceptions;
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels.Logger;
     using TestModels.Service1;
@@ -10,7 +10,7 @@ namespace Bones.Tests.Lifestyles.Named
     using Transient = Bones.Transient;
 
     [Subject("NamedLifeScope")]
-    public class When_resolving_a_service_outside_of_a_named_scope : ContextSpecification
+    public class When_resolving_a_service_outside_of_a_named_scope 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

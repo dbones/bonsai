@@ -1,11 +1,11 @@
 namespace Bones.Tests.Resolving
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels.Logger;
 
     [Subject("Container")]
-    public class When_resolving_a_simple_service : ContextSpecification
+    public class When_resolving_a_simple_service 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();
@@ -34,7 +34,7 @@ namespace Bones.Tests.Resolving
     }
     
     [Subject("Container")]
-    public class When_resolving_a_complex_service : ContextSpecification
+    public class When_resolving_a_complex_service 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

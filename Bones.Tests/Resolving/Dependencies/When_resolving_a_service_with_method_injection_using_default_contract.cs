@@ -1,13 +1,13 @@
 namespace Bones.Tests.Resolving.Dependencies
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service2;
 
     [Subject("Container")]
-    public class When_resolving_a_service_with_method_injection_using_default_contract : ContextSpecification
+    public class When_resolving_a_service_with_method_injection_using_default_contract 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

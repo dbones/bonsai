@@ -2,13 +2,13 @@ namespace Bones.Tests.Resolving.MissingRegistrations
 {
     using System;
     using Exceptions;
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Service1;
 
     [Subject("Registration")]
-    public class When_registering_a_defult_twice : ContextSpecification
+    public class When_registering_a_defult_twice 
     {
         Establish context = () => {
             _subject = new ContainerBuilder();

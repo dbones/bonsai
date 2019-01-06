@@ -2,14 +2,14 @@ namespace Bones.Tests.Resolving.Collections
 {
     using System.Collections.Generic;
     using System.Linq;
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service1;
 
     [Subject("Container")]
-    public class When_resolving_all_services_of_a_type : ContextSpecification
+    public class When_resolving_all_services_of_a_type 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

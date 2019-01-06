@@ -1,13 +1,13 @@
 namespace Bones.Tests.Resolving.NamedInstances
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service1;
 
     [Subject("Container")]
-    public class When_resolving_the_default_service : ContextSpecification
+    public class When_resolving_the_default_service 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

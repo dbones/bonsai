@@ -1,7 +1,7 @@
 namespace Bones.Tests.Resolving.Lazyness
 {
     using System;
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
@@ -9,7 +9,7 @@ namespace Bones.Tests.Resolving.Lazyness
 
 
     [Subject("Container")]
-    public class When_resolving_services_as_a_Lazy_type : ContextSpecification
+    public class When_resolving_services_as_a_Lazy_type 
     {
         Establish context = () =>
         {

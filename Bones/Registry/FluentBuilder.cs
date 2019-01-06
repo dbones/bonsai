@@ -127,7 +127,7 @@
         {
             var scope = new T();
             configScope(scope);
-            Registration.Instance = scope;
+            Registration.ScopedTo = scope;
             return this;
         }
     }

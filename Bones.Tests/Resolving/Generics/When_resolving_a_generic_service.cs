@@ -1,12 +1,12 @@
 namespace Bones.Tests.Resolving.Generics
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.DataStore;
 
     [Subject("Container")]
-    public class When_resolving_a_generic_service : ContextSpecification
+    public class When_resolving_a_generic_service 
     {
         Establish context = () =>
         {

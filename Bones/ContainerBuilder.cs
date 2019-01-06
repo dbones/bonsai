@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Bones.Exceptions;
 
     public class ContainerBuilder
     {
@@ -33,7 +34,7 @@
             var contexts = new DelegateBuilder().Create(registrationContexts);
             var contractRegistry = new ContractRegistry(contexts);
 
-            return new Scope(contractRegistry, null,"singleton");
+            return new Scope(contractRegistry, null, "singleton");
         }
 
         public void RegisterContract(Registration registration)
@@ -124,8 +125,6 @@
     {
         public List<MethodInformation> InjectOnMethods { get; set; } = new List<MethodInformation>();
         public Registration Registration { get; set; }
-
-        public ServiceKey ImplementedKey { get; set; }
 
         public Type ImplementedType { get; set; }
 
@@ -318,12 +317,10 @@
 
             context.Registration = registration;
             context.InjectOnMethods.Add(constructor);
-
             _contexts.Add(hash, context);
-            //ConstructorInfo ctorInfo;
-
+           
             //get the actual constructor
-            if (registrationType != null && registrationType.IsGenericType)
+            if (registrationType?.IsGenericType == true)
             {
                 var ctorParams = registration.Constructor.GetParameters();
                 

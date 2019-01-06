@@ -1,6 +1,6 @@
 namespace Bones.Tests.Lifestyles.ProvidedInstance
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
@@ -9,7 +9,7 @@ namespace Bones.Tests.Lifestyles.ProvidedInstance
     using Transient = Bones.Transient;
 
     [Subject("InstanceLifeScope")]
-    public class When_disposing_the_scope : ContextSpecification
+    public class When_disposing_the_scope 
     {
         private Establish context = () =>
         {

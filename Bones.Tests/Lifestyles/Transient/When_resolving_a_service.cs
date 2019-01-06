@@ -1,13 +1,13 @@
 namespace Bones.Tests.Lifestyles.Transient
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels.Logger;
     using TestModels.Service1;
     using Transient = Bones.Transient;
 
     [Subject("TransientLifeScope")]
-    public class When_resolving_a_service : ContextSpecification
+    public class When_resolving_a_service 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

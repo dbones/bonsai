@@ -72,7 +72,7 @@
 
         public IScope CreateScope(string name = "scope")
         {
-            return new Scope(Contracts, this);
+            return new Scope(Contracts, this, name);
         }
     }
 

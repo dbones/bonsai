@@ -1,13 +1,13 @@
 namespace Bones.Tests.Resolving.Dependencies
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service1;
 
     [Subject("Container")]
-    public class When_resolving_a_named_constructor_dependency_using_parameter_type : ContextSpecification
+    public class When_resolving_a_named_constructor_dependency_using_parameter_type 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();

@@ -21,7 +21,6 @@
         /// <returns>instance of the service</returns>
         TService Resolve<TService>(string serviceName = "default");
 
-        
     }
 
 

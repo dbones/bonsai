@@ -1,14 +1,14 @@
 namespace Bones.Tests.Resolving.Lazyness
 {
     using System;
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service1;
 
     [Subject("Container")]
-    public class When_resloving_instance_from_lazy : ContextSpecification
+    public class When_resloving_instance_from_lazy 
     {
         private Establish context = () =>
         {

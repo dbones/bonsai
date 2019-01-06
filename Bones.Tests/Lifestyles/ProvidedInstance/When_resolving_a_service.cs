@@ -1,12 +1,12 @@
 namespace Bones.Tests.Lifestyles.ProvidedInstance
 {
-    using NUnit.Specifications;
+    using Machine.Specifications;
     using PowerAssert;
     using TestModels.Logger;
     using TestModels.Service1;
 
     [Subject("InstanceLifeScope")]
-    public class When_resolving_a_service : ContextSpecification
+    public class When_resolving_a_service 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();
