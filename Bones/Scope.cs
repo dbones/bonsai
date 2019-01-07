@@ -47,6 +47,8 @@
 
         public object Resolve(ServiceKey serviceKey)
         {
+            Code.Require(()=> serviceKey != null, nameof(serviceKey));
+
             var contract = Contracts.GetContract(serviceKey);
             return contract.LifeSpan.Resolve(this, contract);
         }
@@ -75,6 +77,29 @@
             return new Scope(Contracts, this, name);
         }
     }
+
+    public static class Code 
+    {
+        public static void Require<T>(Func<bool> predicate, Func<T> ex) where T: Exception
+        {
+            if (predicate()) return;
+            throw ex();
+        }
+
+        public static void Require(Func<bool> predicate, string name)
+        {
+            if (predicate()) return;
+            throw new ArgumentException(name);
+        }
+
+        public static void Ensure<T>(Func<bool> predicate, Func<T> ex) where T: Exception
+        {
+            if (predicate()) return;
+            throw ex();
+        }
+
+    }
+
 
     public class Instance
     {
@@ -266,6 +291,8 @@
 
         public ServiceKey(Type service, string serviceName = "default")
         {
+            Code.Require(()=> service != null, nameof(service));
+            
             ServiceName = serviceName;
             Service = service;
             _internalName = $"{Service.FullName} ^_^ {ServiceName}";

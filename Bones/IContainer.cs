@@ -4,6 +4,6 @@
 
     public interface IContainer : IDisposable
     {
-        IScope CreateScope(string name = null);
+        IScope CreateScope(string name = "scope");
     }
 }

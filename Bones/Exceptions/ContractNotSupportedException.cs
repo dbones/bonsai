@@ -5,7 +5,11 @@ namespace Bones.Exceptions
 
     public class ContractNotSupportedException : Exception
     {
-        
+        public ServiceKey Key { get; }
+        public ContractNotSupportedException(ServiceKey serviceKey) : base(serviceKey.ToString())
+        {
+            Key = serviceKey;
+        }
     }
 
     public class CannotFindSupportableConstructorException : Exception

@@ -13,6 +13,8 @@
 
         public void SetupModules(params IModule[] modules)
         {
+            Code.Require(()=> modules != null, nameof(modules));
+            
             foreach (var module in modules)
             {
                 module.Setup(this);
@@ -218,10 +220,9 @@
                     .Select(x => x.Constructor)
                     .FirstOrDefault();
 
-                if (registration.Constructor == null) 
-                {
-                    throw new CannotFindSupportableConstructorException(registration.ImplementedType);    
-                }
+                Code.Ensure(
+                    () => registration.Constructor != null, 
+                    () => new CannotFindSupportableConstructorException(registration.ImplementedType));
             }
 
             int Score(MethodBase method, Registration registration)
@@ -298,6 +299,8 @@
             Registration registration,
             Type registrationType = null)
         {
+            Code.Require(()=> registration != null, nameof(registration));
+
             string hash;
             hash = registrationType?.IsGenericType == true
                 ? $"{registration.Id} {registration.ImplementedType.MakeGenericType(registrationType.GenericTypeArguments)}"
@@ -409,9 +412,9 @@
     {
         private List<Registration> _registrations;
 
-
         public RegistrationRegistry(IEnumerable<Registration> registrations)
         {
+            Code.Require(()=> registrations != null, nameof(registrations));
             _registrations = registrations.ToList();
         }
 
@@ -437,6 +440,8 @@
 
         public Registration BySupportingType(ServiceKey exposedType)
         {
+            Code.Require(()=> exposedType != null, nameof(exposedType));
+            
             return _registrations.FirstOrDefault(x =>
             {
                 if (x.Types.Contains(exposedType))
@@ -486,9 +491,14 @@
 
         public Contract GetContract(ServiceKey serviceKey)
         {
-            return _contracts.TryGetValue(serviceKey, out var entry)
-                ? entry
-                : null;
+            Code.Require(() => serviceKey != null, nameof(serviceKey));
+
+            if (_contracts.TryGetValue(serviceKey, out var entry)) 
+            {
+                return entry;
+            }
+
+            throw new ContractNotSupportedException(serviceKey);
         }
     }
 }

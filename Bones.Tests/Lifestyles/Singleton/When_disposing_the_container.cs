@@ -28,7 +28,7 @@ namespace Bones.Tests.Lifestyles.Singleton
         Because of = () => _subject.Dispose();
         
         It should_dispose_of_all_singleton_services = 
-            () => PAssert.IsTrue(() => _monitor.NumberOfDisposedInstancesOf<ServiceWithCtorAndDisposable>() == 3);
+            () => PAssert.IsTrue(() => _monitor.NumberOfDisposedInstancesOf<ServiceWithCtorAndDisposable>() == 1);
         
         static IContainer _subject;
         static ClassMonitor _monitor;
