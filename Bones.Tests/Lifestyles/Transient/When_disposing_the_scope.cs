@@ -28,7 +28,7 @@ namespace Bones.Tests.Lifestyles.Transient
         Because of = () => _subject.Dispose();
         
         It should_dispose_of_any_transient_service_at_that_scope = 
-            () => PAssert.IsTrue(() => _monitor.NumberOfDisposedInstances<IService>() == 2);
+            () => PAssert.IsTrue(() => _monitor.NumberOfDisposedInstancesOf<ServiceWithCtorAndDisposable>() == 2);
         
         static IScope _subject;
         static ClassMonitor _monitor;

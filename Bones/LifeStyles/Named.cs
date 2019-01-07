@@ -9,13 +9,6 @@
         public object Resolve(Scope currentScope, Contract contract)
         {
             var scope = GetNamedScope(currentScope, Name);
-
-//            var entry = scope.InstanceCache.Get(contract.Id) ?? new Instance()
-//            {
-//                Value = contract.CreateInstance(currentScope),
-//                Contract = contract
-//            };
-
             var entry = scope.InstanceCache.Get(contract.Id);
 
             if (entry == null)
@@ -25,11 +18,11 @@
                     Value = contract.CreateInstance(currentScope),
                     Contract = contract
                 };
+
                 scope.InstanceCache.Add(contract.Id, entry);
+                scope.Tracked.Push(entry);
             }
  
-            scope.Tracked.Push(entry);
-
             return entry.Value;
         }
 

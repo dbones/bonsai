@@ -56,12 +56,14 @@
         public FluentBuilder UsingInstance(object instance)
         {
             Registration.Instance = instance;
+            Registration.ScopedTo = new Provided();
             return this;
         }
 
         public FluentBuilder Scoped<T>() where T : ILifeSpan, new()
         {
-            throw new NotImplementedException();
+            Registration.ScopedTo = new T();
+            return this;
         }
     }
 
@@ -89,13 +91,6 @@
             return this;
         }
 
-
-//        public FluentBuilder<TService> ConstructUsing(Func<ResolvingContext, TService> ctor)
-//        {
-//            Registration.Constructor = ctor ?? throw new ArgumentNullException(nameof(ctor));
-//            return this;
-//        }
-
         public FluentBuilder<TService> DependsOn(RegistrationDependency dependency)
         {
             Registration.Dependencies.Add(dependency);
@@ -114,6 +109,7 @@
         public FluentBuilder<TService> UsingInstance(TService instance)
         {
             Registration.Instance = instance;
+            Registration.ScopedTo = new Provided();
             return this;
         }
 

@@ -31,7 +31,7 @@ namespace Bones.Tests.Lifestyles.ProvidedInstance
         Because of = () => _subject.Dispose();
         
         It should_not_dispose_of_any_provided_instance = 
-            () => PAssert.IsTrue(() => _monitor.NumberOfDisposedInstances<IService>() == 0);
+            () => PAssert.IsTrue(() => _monitor.NumberOfDisposedInstancesOf<ServiceWithCtorAndDisposable>() == 0);
         
         static IScope _subject;
         static ClassMonitor _monitor;

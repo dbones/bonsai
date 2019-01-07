@@ -51,6 +51,8 @@
         public HashSet<ServiceKey> ServiceKeys { get; set; }
         
         public DisposeInstance DisposeInstance { get; set; }
+
+        public object Instance { get; set; }
         
 
         public ILifeSpan LifeSpan { get; set; }
@@ -73,6 +75,7 @@
                     LifeSpan = context.Registration.ScopedTo,
                     ServiceKeys = context.Registration.Types,
                     CreateInstance = Create(context),
+                    Instance = context.Registration.Instance
                 };
 
                 if (typeof(IDisposable).IsAssignableFrom(context.ImplementedType))
@@ -101,6 +104,8 @@
 
         CreateInstance Create(RegistrationContext context)
         {
+            if(context.Registration.Instance != null) return null;
+
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
 
             List<Func<Scope, object>> createParams = new List<Func<Scope, object>>();
@@ -306,15 +311,20 @@
             }
             
             RegistrationContext context = new RegistrationContext();
+            context.Registration = registration;
+            _contexts.Add(hash, context);
+            if (registration.Instance != null)
+            {
+                return;
+            }
+
             var constructor = new MethodInformation()
             {
                 InjectOn = InjectOn.Constructor,
                 Name = "ctor"
             };
-
-            context.Registration = registration;
             context.InjectOnMethods.Add(constructor);
-            _contexts.Add(hash, context);
+            
            
             //get the actual constructor
             if (registrationType?.IsGenericType == true)
