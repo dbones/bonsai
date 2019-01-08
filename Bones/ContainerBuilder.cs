@@ -227,25 +227,38 @@
 
             int Score(MethodBase method, Registration registration)
             {
+                Code.Require(() => method != null, nameof(method));
+                Code.Require(() => registration != null, nameof(registration));
+
                 var parameters = method.GetParameters();
 
-                var plannedMethodParameters =
-                    registration
-                        .Dependencies
-                        .Where(dependency => dependency.Named == method.Name)
-                        .ToList();
+                var plannedMethodParameters = registration.Dependencies.Where(d=>  
+                    d.MethodPredicates.Count == 0
+                    || d.MethodPredicates.All(pred => pred(method)))
+                    .ToList();
 
                 int extraPoints = 0;
 
                 var count = parameters.Count(parameter =>
                 {
                     //see if it is a dependency which the user has provided
-                    var planned = plannedMethodParameters.FirstOrDefault(x => x.ParameterName == parameter.Name);
+                    var planned = plannedMethodParameters
+                        .Select(plannedDepdencency => new 
+                        { 
+                            Count = plannedDepdencency.ParameterPredicates.Count(p => p(parameter)),
+                            Dependency = plannedDepdencency
+                        })
+                        .OrderByDescending(x => x.Count)
+                        .Where(x => x.Count > 0)
+                        .Select(x => x.Dependency)
+                        .FirstOrDefault();
+
                     Func<bool> containsPlannedType = () =>
                     {
                         if (planned == null) return false;
+                        
                         var name = planned.Named ?? "default";
-                        var type = planned.RequiredType;
+                        var type = planned.RequiredType ?? parameter.ParameterType;
                         var key = new ServiceKey(type, name);
 
                         return _registrations.BySupportingType(key) != null;

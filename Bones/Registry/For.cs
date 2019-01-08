@@ -13,27 +13,45 @@
 
         public DependencyBuilder Property(string name)
         {
-            //_dependency.Type = PropertyInjectType.Instance;
-            //_dependency.AttributeName = name;
+            Code.Require(() => !string.IsNullOrEmpty(name), nameof(name));
+
+            _dependency.InjectOn = InjectOn.Constructor;
+            _dependency.AttributeName = name;
+
+            _dependency.MethodPredicates.Add(method => 
+                method.MemberType  == MemberTypes.Property
+                && method.Name == name);
+
             return new DependencyBuilder(_dependency);
         }
 
         public DependencyBuilder Contract<T>()
         {
-            _dependency.RequiredType = typeof(T).GetTypeInfo();
+            _dependency.RequiredType = typeof(T);
+
+            _dependency.ParameterPredicates.Add(parameter => parameter.ParameterType == _dependency.RequiredType);
+
             return new DependencyBuilder(_dependency);
         }
 
         public ParameterSelector Method(string name)
         {
-            //_dependency.Type = MethodInjectType.Instance;
+            Code.Require(() => !string.IsNullOrEmpty(name), nameof(name));
+
+            _dependency.MethodPredicates.Add(method => 
+                method.MemberType  == MemberTypes.Method 
+                && method.Name == name);
+
+            _dependency.InjectOn = InjectOn.Method;
             _dependency.AttributeName = name;
             return new ParameterSelector(_dependency);
         }
 
         public ParameterSelector Constructor()
         {
-            //_dependency.Type = ConstructorInjectType.Instance;
+            _dependency.InjectOn = InjectOn.Constructor;
+            _dependency.MethodPredicates.Add(method => method.MemberType  == MemberTypes.Constructor);
+
             return new ParameterSelector(_dependency);
         }
     }

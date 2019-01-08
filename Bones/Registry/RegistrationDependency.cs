@@ -1,11 +1,17 @@
 ﻿namespace Bones
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
 
     public class RegistrationDependency
     {
-        
+        public RegistrationDependency(){
+            MethodPredicates = new List<Predicate<MethodBase>>();
+            ParameterPredicates = new List<Predicate<ParameterInfo>>();
+        }
+
+
         /// <summary>
         /// the name of the parameter which we are providing information on
         /// </summary>
@@ -37,5 +43,9 @@
         /// the injection we are going to apply
         /// </summary>
         public InjectOn InjectOn { get; set; }
+
+
+        public List<Predicate<MethodBase>> MethodPredicates {get;}
+        public List<Predicate<ParameterInfo>> ParameterPredicates {get;}
     }
 }
