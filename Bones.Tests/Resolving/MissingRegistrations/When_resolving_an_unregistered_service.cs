@@ -19,7 +19,7 @@ namespace Bones.Tests.Resolving.MissingRegistrations
 
         Because of = () => _exception = Catch.Exception(()=> _subject.Resolve<IService2>());
 
-        It should_throw_an_exception => () => PAssert.IsTrue(() => _exception is ContractNotSupportedException);
+        It should_throw_an_exception = () => PAssert.IsTrue(() => _exception is ContractNotSupportedException);
         
         static IScope _subject;
         static Exception _exception;

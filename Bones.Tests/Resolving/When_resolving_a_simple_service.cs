@@ -46,7 +46,7 @@ namespace Bones.Tests.Resolving
 
         Because of = () => _service = _subject.Resolve<ILogger>();
 
-        It should_provide_an_instance => () => PAssert.IsTrue(() => _service != null);
+        It should_provide_an_instance = () => PAssert.IsTrue(() => _service != null);
         It should_provide_an_instance_which_is_associated_with_the_registration = 
             () => PAssert.IsTrue(() => _service is LoggerPlain);
         

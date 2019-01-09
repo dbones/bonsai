@@ -21,8 +21,8 @@ namespace Bones.Tests.Resolving.Lazyness
 
         private Because of = () => _service = _subject.Value;
 
-        It should_indicate_instance_has_been_created => () => PAssert.IsTrue(() => _subject.IsValueCreated);
-        It should_provide_a_lazy_instance => () => PAssert.IsTrue(() => _service is ServiceWithCtor);
+        It should_indicate_instance_has_been_created = () => PAssert.IsTrue(() => _subject.IsValueCreated);
+        It should_provide_a_lazy_instance = () => PAssert.IsTrue(() => _service is ServiceWithCtor);
 
         static IService _service;
         static Lazy<IService> _subject;

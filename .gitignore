@@ -9,3 +9,7 @@ Bones.TestApp/obj/
 Bones.TestApp/bin/
 lcov.info
 .vscode/
+Bones.Benchmarks/BenchmarkDotNet.Artifacts/
+Bones.Benchmarks/obj/Release/netcoreapp2.1/Bones.Benchmarks.assets.cache
+Bones.Benchmarks/obj/
+Bones.Benchmarks/bin/

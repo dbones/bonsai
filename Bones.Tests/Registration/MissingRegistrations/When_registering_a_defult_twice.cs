@@ -17,7 +17,7 @@ namespace Bones.Tests.Resolving.MissingRegistrations
 
         Because of = () => _exception = Catch.Exception(()=> _subject.Create());
 
-        It should_throw_an_exception => () => PAssert.IsTrue(() => _exception is DuplicateNamedContractException);
+        It should_throw_an_exception = () => PAssert.IsTrue(() => _exception is DuplicateNamedContractException);
         
         static ContainerBuilder _subject;
         static Exception _exception;

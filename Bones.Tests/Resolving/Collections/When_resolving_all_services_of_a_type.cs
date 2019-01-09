@@ -23,7 +23,7 @@ namespace Bones.Tests.Resolving.Collections
         Because of = () => _services = _subject.ResolveAll<IService>();
 
         
-        It should_provide_all_instances => () => PAssert.IsTrue(() => _services.Count() == 2);
+        It should_provide_all_instances = () => PAssert.IsTrue(() => _services.Count() == 2);
         
         It should_provide_an_instance_of_the_default_service = 
             () => PAssert.IsTrue(() => _services.Any(x=> x is ServiceWithCtor));

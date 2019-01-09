@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bones\Bones.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="4.8.1" />
+      <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
+      <PackageReference Include="BenchmarkDotNet.Toolchains.Roslyn" Version="0.10.14" />
+      <PackageReference Include="Castle.Windsor" Version="5.0.0-beta001" />
+    </ItemGroup>
+
+</Project>

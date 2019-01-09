@@ -11,12 +11,12 @@
         static void Main(string[] args)
         {
             var builder = new ContainerBuilder();
-            builder.SetupModules(new SimpleModule());
+            builder.SetupModules(new BonesModule());
 
             using (var container = builder.Create())
             using (var scope = container.CreateScope())
             {
-                var service = scope.Resolve<IService2>();
+                var service = scope.Resolve<Service>();
                 
             }
         }
@@ -45,5 +45,51 @@
         }
     }
 
+    class BonesModule : IModule
+    {
+        public void Setup(ContainerBuilder builder)
+        {
+            builder.Register<Logger>().As<Logger>().Scoped<Transient>();
+            builder.Register<Service>().As<Service>().Scoped<Transient>();
+            builder.Register(typeof(Repository<>))
+                .As(typeof(Repository<>)).Scoped<Transient>();
+        }
+    }
+    
+    public class Logger
+    {
+        
+    }
+    
+    
+    public class Repository<T>
+    {
+        public Logger Logger { get; }
+
+        public Repository(Logger logger)
+        {
+            Logger = logger;
+        }
+        
+    }
+    
+    
+    public class Service
+    {
+        public Repository<User> User { get; }
+        public Logger Logger { get; }
+
+        public Service(Repository<User> user, Logger logger)
+        {
+            User = user;
+            Logger = logger;
+        }
+    }
+
+
+    public class User
+    {
+        
+    }
 
 }

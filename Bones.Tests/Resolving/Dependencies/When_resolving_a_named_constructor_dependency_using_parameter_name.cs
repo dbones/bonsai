@@ -19,7 +19,7 @@ namespace Bones.Tests.Resolving.Dependencies
 
         Because of = () => _service = _subject.Resolve<IService>();
 
-        It should_inject_a_dependency => () => PAssert.IsTrue(() => _service.Logger != null);
+        It should_inject_a_dependency = () => PAssert.IsTrue(() => _service.Logger != null);
         It should_inject_an_instance_which_is_associated_with_the_registration = 
             () => PAssert.IsTrue(() => _service.Logger is LoggerPlain);
         

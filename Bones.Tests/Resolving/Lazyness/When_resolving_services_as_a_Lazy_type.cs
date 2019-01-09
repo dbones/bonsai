@@ -21,7 +21,7 @@ namespace Bones.Tests.Resolving.Lazyness
 
         Because of = () => _service = _subject.Resolve<Lazy<IService>>();
 
-        It should_have_created_a_lazy_instance => () => PAssert.IsTrue(() => !_service.IsValueCreated);
+        It should_have_created_a_lazy_instance = () => PAssert.IsTrue(() => !_service.IsValueCreated);
 
         static IScope _subject;
         static Lazy<IService> _service;
