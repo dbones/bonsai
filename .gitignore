@@ -4,3 +4,8 @@ Bones/obj/
 Bones/bin/
 Bones.sln.DotSettings.user
 .idea/
+Bones.TestApp/bin/Debug/netcoreapp2.1/Bones.TestApp.pdb
+Bones.TestApp/obj/
+Bones.TestApp/bin/
+lcov.info
+.vscode/

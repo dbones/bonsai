@@ -33,7 +33,7 @@
             Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
-            InstanceCache = new Cache<string, Instance>();
+            InstanceCache = new Cache<string, Instance>(5);
             Tracked = new Stack<Instance>(10);
         }
 
@@ -153,107 +153,6 @@
             }
         }
 
-        public bool AddWithTimeout(TKey key, TValue value, int timeout)
-        {
-            if (_cacheLock.TryEnterWriteLock(timeout))
-            {
-                try
-                {
-                    _innerCache.Add(key, value);
-                }
-                finally
-                {
-                    _cacheLock.ExitWriteLock();
-                }
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        public TValue GetOrAdd(TKey key, Func<TValue> value)
-        {
-            _cacheLock.EnterUpgradeableReadLock();
-            try
-            {
-                TValue result;
-                if (_innerCache.TryGetValue(key, out result))
-                {
-                    return result;
-                }
-                else
-                {
-                    _cacheLock.EnterWriteLock();
-                    try
-                    {
-                        var v = value();
-                        _innerCache.Add(key, v);
-                        return v;
-                    }
-                    finally
-                    {
-                        _cacheLock.ExitWriteLock();
-                    }
-                }
-            }
-            finally
-            {
-                _cacheLock.ExitUpgradeableReadLock();
-            }
-        }
-
-        public AddOrUpdateStatus AddOrUpdate(TKey key, TValue value)
-        {
-            _cacheLock.EnterUpgradeableReadLock();
-            try
-            {
-                TValue result;
-                if (_innerCache.TryGetValue(key, out result))
-                {
-                    if (result.Equals(value))
-                    {
-                        return AddOrUpdateStatus.Unchanged;
-                    }
-                    else
-                    {
-                        _cacheLock.EnterWriteLock();
-                        try
-                        {
-                            _innerCache[key] = value;
-                        }
-                        finally
-                        {
-                            _cacheLock.ExitWriteLock();
-                        }
-
-                        return AddOrUpdateStatus.Updated;
-                    }
-                }
-                else
-                {
-                    _cacheLock.EnterWriteLock();
-                    try
-                    {
-                        _innerCache.Add(key, value);
-                    }
-                    finally
-                    {
-                        _cacheLock.ExitWriteLock();
-                    }
-
-                    return AddOrUpdateStatus.Added;
-                }
-            }
-            finally
-            {
-                _cacheLock.ExitUpgradeableReadLock();
-            }
-        }
-
         public void Delete(TKey key)
         {
             _cacheLock.EnterWriteLock();
@@ -266,13 +165,6 @@
                 _cacheLock.ExitWriteLock();
             }
         }
-
-        public enum AddOrUpdateStatus
-        {
-            Added,
-            Updated,
-            Unchanged
-        };
 
         ~Cache()
         {

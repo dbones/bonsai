@@ -8,6 +8,11 @@
     {
         private readonly string _hash = Guid.NewGuid().ToString();
 
+        public Registration()
+        {
+            ScopedTo = new Singleton();
+        }
+
         public string Id => _hash;
 
         public override int GetHashCode()

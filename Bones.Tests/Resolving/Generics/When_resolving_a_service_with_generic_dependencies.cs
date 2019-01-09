@@ -21,13 +21,13 @@ namespace Bones.Tests.Resolving.Generics
 
         Because of = () => _service = _subject.Resolve<IService2>() as ServiceWith2ParameterCtor;
 
-        It should_provided_an_instance_of_the_service => 
+        It should_provided_an_instance_of_the_service =
             () => PAssert.IsTrue(() => _service != null);
         
-        It should_have_a_generic_dependency_set => 
+        It should_have_a_generic_dependency_set = 
             () => PAssert.IsTrue(() => _service.Repository != null);
         
-        It should_have_a_nested_generic_dependency_set => 
+        It should_have_a_nested_generic_dependency_set = 
             () => PAssert.IsTrue(() => 
                 ((InMemoryRespositoryWith1ParamGenericCtor<User>)_service.Repository).DataStore != null);
         
@@ -49,6 +49,7 @@ namespace Bones.Tests.Resolving.Generics
                 
                 builder.Register(typeof(InMemoryRespositoryWith1ParamGenericCtor<>))
                     .As(typeof(IMemoryRepository<>))
+                    .As(typeof(IRepository<>))
                     .Scoped<Transient>();
                 
                 builder.Register(typeof(DataStorePlain<>))

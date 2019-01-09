@@ -26,16 +26,6 @@
 
     public static class ScopeExtensions
     {
-//        /// <summary>
-//        /// resolves the service into all instances of the target type
-//        /// </summary>
-//        /// <param name="service">the required service</param>
-//        /// <returns>instance of the service</returns>
-//        public static IEnumerable<object> ResolveAll(this IScope scope, Type service)
-//        {
-//            //return scope.Resolve(typeof())
-//        }
-
         /// <summary>
         /// resolves the service into all instances of the target type
         /// </summary>
@@ -45,7 +35,5 @@
         {
             return scope.Resolve<IEnumerable<TService>>();
         }
-    }
-    
-    
+    }  
 }

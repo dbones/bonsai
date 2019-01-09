@@ -9,6 +9,7 @@ namespace Bones.Tests.Lifestyles.Named
     using Named = Bones.Named;
     using Transient = Bones.Transient;
 
+    [Ignore("work in progress")]
     [Subject("NamedLifeScope")]
     public class When_resolving_a_service_outside_of_a_named_scope 
     {

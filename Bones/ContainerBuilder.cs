@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Xml.Linq;
     using Bones.Exceptions;
 
     public class ContainerBuilder
@@ -13,8 +14,8 @@
 
         public void SetupModules(params IModule[] modules)
         {
-            Code.Require(()=> modules != null, nameof(modules));
-            
+            Code.Require(() => modules != null, nameof(modules));
+
             foreach (var module in modules)
             {
                 module.Setup(this);
@@ -51,11 +52,11 @@
         public CreateInstance CreateInstance { get; set; }
 
         public HashSet<ServiceKey> ServiceKeys { get; set; }
-        
+
         public DisposeInstance DisposeInstance { get; set; }
 
         public object Instance { get; set; }
-        
+
 
         public ILifeSpan LifeSpan { get; set; }
 
@@ -67,15 +68,12 @@
     {
         public IEnumerable<Contract> Create(IEnumerable<RegistrationContext> contexts)
         {
-            Action<object> disposal = instance =>  ((IDisposable) instance).Dispose();
-            Action<object> noopDisposal = instance =>  {};
-            
             foreach (var context in contexts)
             {
                 var contract = new Contract()
                 {
                     LifeSpan = context.Registration.ScopedTo,
-                    ServiceKeys = context.Registration.Types,
+                    ServiceKeys = context.Keys,
                     CreateInstance = Create(context),
                     Instance = context.Registration.Instance
                 };
@@ -103,10 +101,9 @@
         }
 
 
-
         CreateInstance Create(RegistrationContext context)
         {
-            if(context.Registration.Instance != null) return null;
+            if (context.Registration.Instance != null) return null;
 
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
 
@@ -122,7 +119,7 @@
             }
 
             var method = (ConstructorInfo) ctor.Method;
-            
+
             object ParameterLessCtor(Scope scope) => method.Invoke(createParams.Select(x => x(scope)).ToArray());
             return ParameterLessCtor;
         }
@@ -173,6 +170,7 @@
 
 
     public delegate object CreateInstance(Scope currentScope);
+
     public delegate void DisposeInstance(object instance);
 
     public class InjectionPlanner
@@ -221,7 +219,7 @@
                     .FirstOrDefault();
 
                 Code.Ensure(
-                    () => registration.Constructor != null, 
+                    () => registration.Constructor != null,
                     () => new CannotFindSupportableConstructorException(registration.ImplementedType));
             }
 
@@ -232,9 +230,9 @@
 
                 var parameters = method.GetParameters();
 
-                var plannedMethodParameters = registration.Dependencies.Where(d=>  
-                    d.MethodPredicates.Count == 0
-                    || d.MethodPredicates.All(pred => pred(method)))
+                var plannedMethodParameters = registration.Dependencies.Where(d =>
+                        d.MethodPredicates.Count == 0
+                        || d.MethodPredicates.All(pred => pred(method)))
                     .ToList();
 
                 int extraPoints = 0;
@@ -243,8 +241,8 @@
                 {
                     //see if it is a dependency which the user has provided
                     var planned = plannedMethodParameters
-                        .Select(plannedDepdencency => new 
-                        { 
+                        .Select(plannedDepdencency => new
+                        {
                             Count = plannedDepdencency.ParameterPredicates.Count(p => p(parameter)),
                             Dependency = plannedDepdencency
                         })
@@ -256,7 +254,7 @@
                     Func<bool> containsPlannedType = () =>
                     {
                         if (planned == null) return false;
-                        
+
                         var name = planned.Named ?? "default";
                         var type = planned.RequiredType ?? parameter.ParameterType;
                         var key = new ServiceKey(type, name);
@@ -284,13 +282,14 @@
             }
         }
     }
-    
-    
-    
+
+
     public class RegistrationScanner
     {
         private readonly RegistrationRegistry _registrations;
-        private readonly Dictionary<string, RegistrationContext> _contexts = new Dictionary<string, RegistrationContext>();
+
+        private readonly Dictionary<string, RegistrationContext> _contexts =
+            new Dictionary<string, RegistrationContext>();
 
         public RegistrationScanner(RegistrationRegistry registrations)
         {
@@ -299,7 +298,7 @@
 
         public IEnumerable<RegistrationContext> Scan()
         {
-            foreach (var registration in _registrations)
+            foreach (var registration in _registrations.Where(x => !x.ImplementedType.IsGenericType))
             {
                 GetServiceKeys(registration);
             }
@@ -312,7 +311,7 @@
             Registration registration,
             Type registrationType = null)
         {
-            Code.Require(()=> registration != null, nameof(registration));
+            Code.Require(() => registration != null, nameof(registration));
 
             string hash;
             hash = registrationType?.IsGenericType == true
@@ -325,12 +324,13 @@
             {
                 return;
             }
-            
+
             RegistrationContext context = new RegistrationContext();
             context.Registration = registration;
             _contexts.Add(hash, context);
             if (registration.Instance != null)
             {
+                context.Keys = registration.Types;
                 return;
             }
 
@@ -340,13 +340,13 @@
                 Name = "ctor"
             };
             context.InjectOnMethods.Add(constructor);
-            
-           
+
+
             //get the actual constructor
             if (registrationType?.IsGenericType == true)
             {
                 var ctorParams = registration.Constructor.GetParameters();
-                
+
                 var type = registration.ImplementedType.MakeGenericType(registrationType.GenericTypeArguments);
                 var c = type.GetConstructors()
                     .Where(x => x.GetParameters().Length == ctorParams.Length)
@@ -364,7 +364,8 @@
                             }
 
                             if (parameter.IsGenericType && candidateParameter.IsGenericType
-                                && parameter.GetGenericTypeDefinition() == candidateParameter.GetGenericTypeDefinition())
+                                                        && parameter.GetGenericTypeDefinition() ==
+                                                        candidateParameter.GetGenericTypeDefinition())
                             {
                                 continue;
                             }
@@ -374,14 +375,18 @@
 
                         return true;
                     }).FirstOrDefault();
-                
+
                 constructor.Method = c;
                 context.ImplementedType = type;
+                context.Keys = registration.Types.Select(t => t.Service.IsGenericTypeDefinition 
+                    ? new ServiceKey(t.Service.MakeGenericType(type.GenericTypeArguments), t.ServiceName) 
+                    : t).ToHashSet();
             }
             else
             {
                 constructor.Method = (ConstructorInfo) registration.Constructor;
                 context.ImplementedType = registration.ImplementedType;
+                context.Keys = registration.Types;
             }
 
             var parameters = constructor.Method.GetParameters();
@@ -427,7 +432,7 @@
 
         public RegistrationRegistry(IEnumerable<Registration> registrations)
         {
-            Code.Require(()=> registrations != null, nameof(registrations));
+            Code.Require(() => registrations != null, nameof(registrations));
             _registrations = registrations.ToList();
         }
 
@@ -453,8 +458,8 @@
 
         public Registration BySupportingType(ServiceKey exposedType)
         {
-            Code.Require(()=> exposedType != null, nameof(exposedType));
-            
+            Code.Require(() => exposedType != null, nameof(exposedType));
+
             return _registrations.FirstOrDefault(x =>
             {
                 if (x.Types.Contains(exposedType))
@@ -469,6 +474,7 @@
                 }
 
                 return x.Types.Any(possibleType =>
+                    possibleType.Service.IsGenericType &&
                     possibleType.Service.GetGenericTypeDefinition() == exposedType.Service.GetGenericTypeDefinition());
             });
         }
@@ -489,7 +495,7 @@
     public class ContractRegistry
     {
         private IDictionary<ServiceKey, Contract> _contracts;
-        
+
         public ContractRegistry(IEnumerable<Contract> contracts)
         {
             _contracts = new Dictionary<ServiceKey, Contract>();
@@ -499,14 +505,14 @@
                 {
                     _contracts.Add(key, contract);
                 }
-            }   
+            }
         }
 
         public Contract GetContract(ServiceKey serviceKey)
         {
             Code.Require(() => serviceKey != null, nameof(serviceKey));
 
-            if (_contracts.TryGetValue(serviceKey, out var entry)) 
+            if (_contracts.TryGetValue(serviceKey, out var entry))
             {
                 return entry;
             }

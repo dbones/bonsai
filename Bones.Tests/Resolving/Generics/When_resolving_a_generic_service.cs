@@ -5,6 +5,7 @@ namespace Bones.Tests.Resolving.Generics
     using TestModels;
     using TestModels.DataStore;
 
+    [Ignore("not supported")]
     [Subject("Container")]
     public class When_resolving_a_generic_service 
     {
@@ -18,7 +19,7 @@ namespace Bones.Tests.Resolving.Generics
 
         Because of = () => _service = _subject.Resolve<IDataStore<User>>();
 
-        It should_provided_an_instance_of_the_service => 
+        It should_provided_an_instance_of_the_service =
             () => PAssert.IsTrue(() => _service is DataStorePlain<User>);
 
         static IScope _subject;

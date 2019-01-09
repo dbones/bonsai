@@ -1,6 +1,7 @@
 ﻿namespace Bones.Tests.TestModels.Service1
 {
     using Logger;
+    using System;
 
     /// <summary>
     ///     simple service, ctor injection (ILogger)
@@ -9,6 +10,7 @@
     {
         public ServiceWithCtor(ILogger logger)
         {
+            if (logger == null) throw new Exception(nameof(logger));
             Logger = logger;
         }
 

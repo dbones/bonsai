@@ -8,6 +8,7 @@ namespace Bones.Tests.Resolving.Collections
     using TestModels.Logger;
     using TestModels.Service1;
 
+    [Ignore("work in progress")]
     [Subject("Container")]
     public class When_resolving_all_services_of_a_type 
     {
