@@ -65,7 +65,6 @@ namespace Bones.Benchmarks
 
         protected abstract Bones.IModule SetupBones();
         protected abstract IWindsorInstaller SetupWindsor();
-        
         protected abstract Autofac.Module SetupAutofac();
     }
 }
