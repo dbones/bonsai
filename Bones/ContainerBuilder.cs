@@ -4,9 +4,10 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
-    using System.Xml.Linq;
     using Bones.Exceptions;
+    using FastExpressionCompiler;
 
     public class ContainerBuilder
     {
@@ -107,6 +108,47 @@
 
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
 
+            //List<Func<Scope, object>> createParams = new List<Func<Scope, object>>();
+            List<Expression> createParams = new List<Expression>();
+
+            var parameters = ctor.Parameters;
+
+            
+            var scopeParam = Expression.Parameter(typeof(Scope));
+            var resolve = typeof(Scope).GetMethod("Resolve", new Type[] {typeof(ServiceKey)});
+            foreach (var param in parameters)
+            {
+                var p = param;
+                
+                Expression constantExpr = Expression.Constant(p.ServiceKey);
+                MethodCallExpression resolveParam = Expression.Call(
+                    scopeParam,
+                    resolve,
+                    constantExpr
+                );
+
+                var convert = Expression.Convert(resolveParam, p.ServiceKey.Service);
+                
+                createParams.Add(convert);
+            }
+            
+            var method = (ConstructorInfo) ctor.Method;
+            var newExpression =
+                Expression.New(method, createParams);
+            
+            var compiledCtor = Expression.Lambda<Func<Scope, object>>(newExpression, scopeParam).CompileFast();
+
+            object ParameterLessCtor(Scope scope) => compiledCtor(scope);
+            return ParameterLessCtor;
+        }
+        
+        
+        CreateInstance CreateReflection(RegistrationContext context)
+        {
+            if (context.Registration.Instance != null) return null;
+
+            var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
+
             List<Func<Scope, object>> createParams = new List<Func<Scope, object>>();
 
             var parameters = ctor.Parameters;
@@ -154,7 +196,6 @@
         public string Name { get; set; }
         public object Value { get; set; }
         public ServiceKey ServiceKey { get; set; }
-        public ServiceKey GenericServiceKey { get; set; }
     }
 
 
