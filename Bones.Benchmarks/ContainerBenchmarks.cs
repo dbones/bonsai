@@ -6,6 +6,7 @@ namespace Bones.Benchmarks
     using Castle.MicroKernel.Lifestyle;
     using Castle.MicroKernel.Registration;
     using Castle.Windsor;
+    using Grace.DependencyInjection;
     using ModuleRegistrationExtensions = Autofac.ModuleRegistrationExtensions;
 
     [InvocationCount(5000, 50)]
@@ -21,7 +22,10 @@ namespace Bones.Benchmarks
 
         private Autofac.IContainer _autofacContainer;
         protected Autofac.ILifetimeScope _autofacScope;
-        
+
+        private Grace.DependencyInjection.DependencyInjectionContainer _graceContainer;
+        protected IExportLocatorScope _graceScope;
+
         
         [GlobalSetup]
         public void GlobalSetup()
@@ -36,6 +40,9 @@ namespace Bones.Benchmarks
             var autofacBuilder = new Autofac.ContainerBuilder();
             ModuleRegistrationExtensions.RegisterModule(autofacBuilder, SetupAutofac());
             _autofacContainer = autofacBuilder.Build();
+            
+            _graceContainer = new Grace.DependencyInjection.DependencyInjectionContainer();
+            _graceContainer.Configure(SetupGrace());
         }
 
         [IterationSetup]
@@ -44,6 +51,7 @@ namespace Bones.Benchmarks
             _bonesScope = _bonesContainer.CreateScope();
             _windsorScope = _windsorContainer.BeginScope();
             _autofacScope = _autofacContainer.BeginLifetimeScope();
+            _graceScope = _graceContainer.BeginLifetimeScope();
         }
         
         [IterationCleanup]
@@ -52,6 +60,7 @@ namespace Bones.Benchmarks
             _bonesScope.Dispose();
             _windsorScope.Dispose();
             _autofacScope.Dispose();
+            _graceScope.Dispose();
         }
         
         [GlobalCleanup]
@@ -60,11 +69,13 @@ namespace Bones.Benchmarks
             _bonesContainer.Dispose();
             _windsorContainer.Dispose();
             _autofacContainer.Dispose();
+            _graceContainer.Dispose();
         }
         
 
         protected abstract Bones.IModule SetupBones();
         protected abstract IWindsorInstaller SetupWindsor();
         protected abstract Autofac.Module SetupAutofac();
+        protected abstract Grace.DependencyInjection.IConfigurationModule SetupGrace();
     }
 }

@@ -114,8 +114,8 @@
             var parameters = ctor.Parameters;
 
             
-            var scopeParam = Expression.Parameter(typeof(Scope));
-            var resolve = typeof(Scope).GetMethod("Resolve", new Type[] {typeof(ServiceKey)});
+            var scopeParam = Expression.Parameter(typeof(IAdvancedScope));
+            var resolve = typeof(IAdvancedScope).GetMethod("Resolve", new Type[] {typeof(ServiceKey)});
             foreach (var param in parameters)
             {
                 var p = param;
@@ -136,9 +136,9 @@
             var newExpression =
                 Expression.New(method, createParams);
             
-            var compiledCtor = Expression.Lambda<Func<Scope, object>>(newExpression, scopeParam).CompileFast();
+            var compiledCtor = Expression.Lambda<Func<IAdvancedScope, object>>(newExpression, scopeParam).CompileFast();
 
-            object ParameterLessCtor(Scope scope) => compiledCtor(scope);
+            object ParameterLessCtor(IAdvancedScope scope) => compiledCtor(scope);
             return ParameterLessCtor;
         }
         
@@ -149,20 +149,20 @@
 
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
 
-            List<Func<Scope, object>> createParams = new List<Func<Scope, object>>();
+            List<Func<IAdvancedScope, object>> createParams = new List<Func<IAdvancedScope, object>>();
 
             var parameters = ctor.Parameters;
 
             foreach (var param in parameters)
             {
                 var p = param;
-                object CreateParam(Scope scope) => scope.Resolve(p.ServiceKey);
+                object CreateParam(IAdvancedScope scope) => scope.Resolve(p.ServiceKey);
                 createParams.Add(CreateParam);
             }
 
             var method = (ConstructorInfo) ctor.Method;
 
-            object ParameterLessCtor(Scope scope) => method.Invoke(createParams.Select(x => x(scope)).ToArray());
+            object ParameterLessCtor(IAdvancedScope scope) => method.Invoke(createParams.Select(x => x(scope)).ToArray());
             return ParameterLessCtor;
         }
     }
@@ -210,7 +210,7 @@
     }
 
 
-    public delegate object CreateInstance(Scope currentScope);
+    public delegate object CreateInstance(IAdvancedScope currentScope);
 
     public delegate void DisposeInstance(object instance);
 

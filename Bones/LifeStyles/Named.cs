@@ -6,7 +6,7 @@
     {
         public string Name { get; set; }
 
-        public object Resolve(Scope currentScope, Contract contract)
+        public object Resolve(IAdvancedScope  currentScope, Contract contract)
         {
             var scope = GetNamedScope(currentScope, Name);
             var entry = scope.InstanceCache.Get(contract.Id);
@@ -26,7 +26,7 @@
             return entry.Value;
         }
 
-        Scope GetNamedScope(Scope scope, string name)
+        IAdvancedScope  GetNamedScope(IAdvancedScope  scope, string name)
         {
             if (scope.Name == name)
             {

@@ -17,13 +17,18 @@ namespace Bones.Benchmarks
         
         [Benchmark]
         public Service Autofac() => _autofacScope.Resolve<Service>();
+        
+        [Benchmark]
+        public Service Grace() => _graceScope.Locate<Service>();
 
         protected override IModule SetupBones() => new BonesModule();
 
         protected override IWindsorInstaller SetupWindsor() => new WindsorInstaller();
         
-
         protected override Module SetupAutofac() => new AutofacModule();
+        
+        protected override Grace.DependencyInjection.IConfigurationModule SetupGrace() => new GraveModule();
+        
         
         class BonesModule : IModule
         {
@@ -56,6 +61,16 @@ namespace Bones.Benchmarks
                 builder.RegisterType<Logger>().AsSelf().SingleInstance();
                 builder.RegisterType<Service>().AsSelf().InstancePerDependency();
                 builder.RegisterGeneric(typeof(Repository<>)).AsSelf().InstancePerLifetimeScope();
+            }
+        }
+        
+        class GraveModule : Grace.DependencyInjection.IConfigurationModule
+        {
+            public void Configure(Grace.DependencyInjection.IExportRegistrationBlock builder)
+            {
+                builder.Export<Logger>().As<Logger>().Lifestyle.SingletonPerScope();
+                builder.Export<Service>().As<Service>();
+                builder.Export(typeof(Repository<>)).As(typeof(Repository<>)).Lifestyle.SingletonPerScope();
             }
         }
     }

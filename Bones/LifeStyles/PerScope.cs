@@ -2,7 +2,7 @@
 {
     public class PerScope : ILifeSpan
     {
-        public object Resolve(Scope currentScope, Contract contract)
+        public object Resolve(IAdvancedScope currentScope, Contract contract)
         {
             var entry = currentScope.InstanceCache.Get(contract.Id);
 

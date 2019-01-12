@@ -4,6 +4,6 @@
 
     public interface ILifeSpan
     {
-        object Resolve(Scope currentScope, Contract contract);
+        object Resolve(IAdvancedScope currentScope, Contract contract);
     }
 }

@@ -6,6 +6,7 @@
     {
         static void Main(string[] args)
         {
+            BenchmarkRunner.Run<DelegateBench>();
             BenchmarkRunner.Run<TransientBench>();
             BenchmarkRunner.Run<SingletonBench>();
             BenchmarkRunner.Run<ScopeBench>();

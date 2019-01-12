@@ -1,27 +1,23 @@
 ﻿namespace Bones
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Reflection.Metadata.Ecma335;
-    using System.Security;
     using System.Threading;
-    using Exceptions;
 
 
     public interface IAdvancedScope : IScope
     {
         ContractRegistry Contracts { get; }
         
-        Cache<string, Instance> InstanceCache { get; }
+        ICache<string, Instance> InstanceCache { get; }
         
         Stack<Instance> Tracked { get; }
 
         string Name { get; }
 
         object Resolve(ServiceKey serviceKey);
+
+        object Resolve(Contract contract);
 
         Scope ParentScope { get; }
     }
@@ -33,11 +29,11 @@
             Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
-            InstanceCache = new Cache<string, Instance>(5);
+            InstanceCache = new SimpleCache<string, Instance>(5);
             Tracked = new Stack<Instance>(10);
         }
 
-        public Cache<string, Instance> InstanceCache { get; }
+        public ICache<string, Instance> InstanceCache { get; }
 
         public Stack<Instance> Tracked { get; }
 
@@ -52,14 +48,22 @@
             var contract = Contracts.GetContract(serviceKey);
             return contract.LifeSpan.Resolve(this, contract);
         }
+        
+        public object Resolve(Contract contract)
+        {
+            Code.Require(()=> contract != null, nameof(contract));
+            return contract.LifeSpan.Resolve(this, contract);
+        }
 
         public TService Resolve<TService>(string serviceName = "default")
         {
             return (TService) Resolve(new ServiceKey(typeof(TService), serviceName));
         }
 
-        public object Resolve(Type service, string name)
+        public object Resolve(Type service, string name = "default")
         {
+            Code.Require(() => service != null, nameof(service));
+            
             return Resolve(new ServiceKey(service, name));
         }
 
@@ -106,19 +110,61 @@
         public Contract Contract { get; set; }
         public object Value { get; set; }
     }
-    
 
-    public class Cache<TKey,TValue> where TValue : class
+
+    public interface ICache<TKey, TValue> where TValue : class
+    {
+        int Count { get; }
+        TValue Get(TKey key);
+        void Add(TKey key, TValue value);
+        void Delete(TKey key);
+    }
+
+    public class SimpleCache<TKey, TValue> : ICache<TKey, TValue> where TValue : class
+    {
+        private readonly Dictionary<TKey, TValue> _innerCache;
+
+
+        public SimpleCache(int capacity)
+        {
+            _innerCache = new Dictionary<TKey, TValue>(capacity);
+        }
+
+        public SimpleCache()
+        {
+            _innerCache = new Dictionary<TKey, TValue>();
+        }
+        
+        public int Count { get; }
+        public TValue Get(TKey key)
+        {
+            return _innerCache.TryGetValue(key, out var v) 
+                ? v 
+                : null;
+        }
+
+        public void Add(TKey key, TValue value)
+        {
+            _innerCache.Add(key, value);
+        }
+
+        public void Delete(TKey key)
+        {
+            _innerCache.Remove(key);
+        }
+    }
+
+    public class ConcurrentCache<TKey,TValue> : ICache<TKey, TValue> where TValue : class
     {
         private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
         private readonly Dictionary<TKey, TValue> _innerCache;
 
-        public Cache(int capacity)
+        public ConcurrentCache(int capacity)
         {
             _innerCache = new Dictionary<TKey,TValue>(capacity);
         }
 
-        public Cache()
+        public ConcurrentCache()
         {
             _innerCache = new Dictionary<TKey,TValue>();
         }
@@ -166,7 +212,7 @@
             }
         }
 
-        ~Cache()
+        ~ConcurrentCache()
         {
             _cacheLock?.Dispose();
         }

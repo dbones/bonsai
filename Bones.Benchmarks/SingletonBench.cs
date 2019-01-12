@@ -6,6 +6,8 @@ namespace Bones.Benchmarks
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Windsor;
     using ContainerBuilder = Bones.ContainerBuilder;
+    using Module = Autofac.Module;
+
 
     public class SingletonBench : ContainerBenchmarks
     {
@@ -17,6 +19,9 @@ namespace Bones.Benchmarks
         
         [Benchmark]
         public Service Autofac() => _autofacScope.Resolve<Service>();
+        
+        [Benchmark]
+        public Service Grace() => _graceScope.Locate<Service>();
 
         protected override IModule SetupBones() => new BonesModule();
 
@@ -24,6 +29,8 @@ namespace Bones.Benchmarks
         
 
         protected override Module SetupAutofac() => new AutofacModule();
+        protected override Grace.DependencyInjection.IConfigurationModule SetupGrace() => new GraveModule();
+
         
         class BonesModule : IModule
         {
@@ -56,6 +63,16 @@ namespace Bones.Benchmarks
                 builder.RegisterType<Logger>().AsSelf().SingleInstance();
                 builder.RegisterType<Service>().AsSelf().SingleInstance();
                 builder.RegisterGeneric(typeof(Repository<>)).AsSelf().SingleInstance();
+            }
+        }
+        
+        class GraveModule : Grace.DependencyInjection.IConfigurationModule
+        {
+            public void Configure(Grace.DependencyInjection.IExportRegistrationBlock builder)
+            {
+                builder.Export<Logger>().As<Logger>().Lifestyle.Singleton();
+                builder.Export<Service>().As<Service>().Lifestyle.Singleton();
+                builder.Export(typeof(Repository<>)).As(typeof(Repository<>)).Lifestyle.Singleton();
             }
         }
     }

@@ -5,6 +5,7 @@ namespace Bones.Benchmarks
     using Castle.MicroKernel.Registration;
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Windsor;
+    using Grace.DependencyInjection;
     using ContainerBuilder = Bones.ContainerBuilder;
 
     public class TransientBench : ContainerBenchmarks
@@ -17,6 +18,9 @@ namespace Bones.Benchmarks
         
         [Benchmark]
         public Service Autofac() => _autofacScope.Resolve<Service>();
+        
+        [Benchmark]
+        public Service Grace() => _graceScope.Locate<Service>();
 
         protected override IModule SetupBones() => new BonesModule();
 
@@ -24,7 +28,9 @@ namespace Bones.Benchmarks
         
 
         protected override Module SetupAutofac() => new AutofacModule();
+        protected override IConfigurationModule SetupGrace() => new GraveModule();
         
+
         class BonesModule : IModule
         {
             public void Setup(ContainerBuilder builder)
@@ -56,6 +62,16 @@ namespace Bones.Benchmarks
                 builder.RegisterType<Logger>().AsSelf().InstancePerDependency();
                 builder.RegisterType<Service>().AsSelf().InstancePerDependency();
                 builder.RegisterGeneric(typeof(Repository<>)).AsSelf().InstancePerDependency();
+            }
+        }
+        
+        class GraveModule : Grace.DependencyInjection.IConfigurationModule
+        {
+            public void Configure(IExportRegistrationBlock builder)
+            {
+                builder.Export<Logger>().As<Logger>();
+                builder.Export<Service>().As<Service>();
+                builder.Export(typeof(Repository<>)).As(typeof(Repository<>));
             }
         }
     }
