@@ -7,7 +7,7 @@ namespace Bones.Tests.Resolving.Lazyness
     using TestModels.Logger;
     using TestModels.Service1;
 
-
+    [Ignore("wip")]
     [Subject("Container")]
     public class When_resolving_services_as_a_Lazy_type 
     {

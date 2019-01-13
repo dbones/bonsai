@@ -6,6 +6,7 @@ namespace Bones.Tests.Resolving.MissingRegistrations
     using PowerAssert;
     using TestModels.Service1;
 
+    [Ignore("wip")]
     [Subject("Registration")]
     public class When_registering_a_service_twice 
     {

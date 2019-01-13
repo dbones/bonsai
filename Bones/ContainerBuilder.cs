@@ -69,13 +69,15 @@
     {
         public IEnumerable<Contract> Create(IEnumerable<RegistrationContext> contexts)
         {
+            var contracts = new List<Contract>();
             foreach (var context in contexts)
             {
                 var contract = new Contract()
                 {
+                    Id = context.Id,
                     LifeSpan = context.Registration.ScopedTo,
                     ServiceKeys = context.Keys,
-                    CreateInstance = Create(context),
+                    
                     Instance = context.Registration.Instance
                 };
 
@@ -88,8 +90,17 @@
                     contract.DisposeInstance = NoOpDisposal;
                 }
 
-                yield return contract;
+                contracts.Add( contract);
             }
+
+
+            foreach (var context in contexts)
+            {
+                var contract = contracts.First(x => x.Id == context.Id);
+                contract.CreateInstance = Create(context, contracts);
+            }
+
+            return contracts;
         }
 
         void NoOpDisposal(object instance)
@@ -102,7 +113,7 @@
         }
 
 
-        CreateInstance Create(RegistrationContext context)
+        CreateInstance Create(RegistrationContext context, IEnumerable<Contract> contracts)
         {
             if (context.Registration.Instance != null) return null;
 
@@ -115,17 +126,21 @@
 
             
             var scopeParam = Expression.Parameter(typeof(IAdvancedScope));
-            var resolve = typeof(IAdvancedScope).GetMethod("Resolve", new Type[] {typeof(ServiceKey)});
+            var resolve = typeof(IAdvancedScope).GetMethod("Resolve", new Type[] {typeof(Contract)});
             foreach (var param in parameters)
             {
                 var p = param;
+                var contract = contracts.First(x => x.ServiceKeys.Contains(p.ServiceKey));
                 
-                Expression constantExpr = Expression.Constant(p.ServiceKey);
+                
+                Expression constantExpr = Expression.Constant(contract);
                 MethodCallExpression resolveParam = Expression.Call(
                     scopeParam,
                     resolve,
                     constantExpr
                 );
+
+                
 
                 var convert = Expression.Convert(resolveParam, p.ServiceKey.Service);
                 
@@ -175,6 +190,8 @@
         public Type ImplementedType { get; set; }
 
         public HashSet<ServiceKey> Keys { get; set; } = new HashSet<ServiceKey>();
+        
+        public string Id { get; set; } = Guid.NewGuid().ToString();
     }
 
     public class MethodInformation
@@ -551,7 +568,7 @@
 
         public Contract GetContract(ServiceKey serviceKey)
         {
-            Code.Require(() => serviceKey != null, nameof(serviceKey));
+            //Code.Require(() => serviceKey != null, nameof(serviceKey));
 
             if (_contracts.TryGetValue(serviceKey, out var entry))
             {

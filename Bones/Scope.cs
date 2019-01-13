@@ -43,7 +43,7 @@
 
         public object Resolve(ServiceKey serviceKey)
         {
-            Code.Require(()=> serviceKey != null, nameof(serviceKey));
+            //Code.Require(()=> serviceKey != null, nameof(serviceKey));
 
             var contract = Contracts.GetContract(serviceKey);
             return contract.LifeSpan.Resolve(this, contract);
@@ -51,7 +51,7 @@
         
         public object Resolve(Contract contract)
         {
-            Code.Require(()=> contract != null, nameof(contract));
+            //Code.Require(()=> contract != null, nameof(contract));
             return contract.LifeSpan.Resolve(this, contract);
         }
 

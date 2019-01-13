@@ -7,6 +7,7 @@ namespace Bones.Tests.Resolving.Lazyness
     using TestModels.Logger;
     using TestModels.Service1;
 
+    [Ignore("wip")]
     [Subject("Container")]
     public class When_resloving_instance_from_lazy 
     {
