@@ -1,15 +1,9 @@
-Bones.Tests/bin/
-Bones.Tests/obj/
-Bones/obj/
-Bones/bin/
-Bones.sln.DotSettings.user
-.idea/
-Bones.TestApp/bin/Debug/netcoreapp2.1/Bones.TestApp.pdb
-Bones.TestApp/obj/
-Bones.TestApp/bin/
 lcov.info
-.vscode/
-Bones.Benchmarks/BenchmarkDotNet.Artifacts/
-Bones.Benchmarks/obj/Release/netcoreapp2.1/Bones.Benchmarks.assets.cache
-Bones.Benchmarks/obj/
-Bones.Benchmarks/bin/
+.idea/
+
+BenchmarkDotNet.Artifacts/
+obj/
+bin/
+Bones.sln.DotSettings.user
+
+results reflection/
