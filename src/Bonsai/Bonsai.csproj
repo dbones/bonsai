@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <Version>0.0.1</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Bonsai.Ioc</PackageId>
     <PackageTitle>Bonsai</PackageTitle>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
