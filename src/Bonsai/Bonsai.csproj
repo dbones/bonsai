@@ -1,23 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Bonsai</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <Compile Remove="Factories\**" />
-    </ItemGroup>
+  <PropertyGroup>
+    <PackageId>Bonsai.Ioc</PackageId>
+    <PackageTitle>Bonsai</PackageTitle>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>IoC DI Container modular inversion-of-control dependency-injection</PackageTags>
+    <PackageLicenseUrl>http://opensource.org/licenses/Apache-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/dbones/bonsai</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/dbones/bonsai/master/images/rect151.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/dbones/bonsai</RepositoryUrl>
+    <PackageReleaseNotes>This is a work in progress</PackageReleaseNotes>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Remove="Factories\**" />
-    </ItemGroup>
 
-    <ItemGroup>
-      <None Remove="Factories\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="FastExpressionCompiler" Version="1.10.1" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FastExpressionCompiler" Version="1.10.1" />
+  </ItemGroup>
 
 </Project>
