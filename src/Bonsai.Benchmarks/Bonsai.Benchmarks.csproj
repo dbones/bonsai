@@ -12,7 +12,6 @@
     <ItemGroup>
       <PackageReference Include="Autofac" Version="4.8.1" />
       <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
-      <PackageReference Include="BenchmarkDotNet.Toolchains.Roslyn" Version="0.10.14" />
       <PackageReference Include="Castle.Windsor" Version="5.0.0-beta001" />
       <PackageReference Include="Grace" Version="6.4.2" />
     </ItemGroup>
