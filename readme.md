@@ -10,9 +10,10 @@ Currently a work in progress. ( brand new :) )
 
 # Features 
 
+* Constructor injection
 * Fluent Registration
 * Open Generics
-* Named instnances
+* Named services
 * Scopes (Transient, Singleton, Named, Scoped)
 * Tracks IDisposable instances
 * more to come....
@@ -49,7 +50,7 @@ builder.SetupModules(new RegisterContracts());
 using(var container = builder.Create())
 using(var scope = container.CreateScope())
 { 
-    var service = _subject.Resolve<IService>();
+    var service = scope.Resolve<IService>();
 }
 ```
 
