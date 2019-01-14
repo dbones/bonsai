@@ -1,7 +1,9 @@
 namespace Bones.Tests.Resolving
 {
+    using LifeStyles;
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels.Logger;
 
     [Subject("Container")]

@@ -2,9 +2,10 @@ namespace Bones.Tests.Lifestyles.Transient
 {
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels.Logger;
     using TestModels.Service1;
-    using Transient = Bones.Transient;
+    using Transient = LifeStyles.Transient;
 
     [Subject("TransientLifeScope")]
     public class When_resolving_a_service 

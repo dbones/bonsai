@@ -3,6 +3,9 @@
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// this is a scope, of which you can resolve objects at.
+    /// </summary>
     public interface IScope : IContainer
     {
         /// <summary>

@@ -7,6 +7,7 @@ namespace Bones.Benchmarks
     using Castle.MicroKernel.Registration;
     using Castle.Windsor;
     using Grace.DependencyInjection;
+    using Registry;
     using ModuleRegistrationExtensions = Autofac.ModuleRegistrationExtensions;
 
     [InvocationCount(5000, 50)]
@@ -73,7 +74,7 @@ namespace Bones.Benchmarks
         }
         
 
-        protected abstract Bones.IModule SetupBones();
+        protected abstract IModule SetupBones();
         protected abstract IWindsorInstaller SetupWindsor();
         protected abstract Autofac.Module SetupAutofac();
         protected abstract Grace.DependencyInjection.IConfigurationModule SetupGrace();

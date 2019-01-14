@@ -2,12 +2,14 @@ namespace Bones.Tests.Lifestyles.Scoped
 {
     using System;
     using Exceptions;
+    using LifeStyles;
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels.Logger;
     using TestModels.Service1;
-    using Named = Bones.Named;
-    using Transient = Bones.Transient;
+    using Named = LifeStyles.Named;
+    using Transient = LifeStyles.Transient;
 
     [Ignore("work in progress")]
     [Subject("ScopedLifeScope")]

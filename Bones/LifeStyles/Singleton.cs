@@ -1,4 +1,4 @@
-﻿namespace Bones
+﻿namespace Bones.LifeStyles
 {
     public class Singleton : Named
     {

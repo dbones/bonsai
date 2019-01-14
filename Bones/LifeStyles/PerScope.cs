@@ -1,5 +1,8 @@
-﻿namespace Bones
+﻿namespace Bones.LifeStyles
 {
+    using Contracts;
+    using Internal;
+
     public class PerScope : ILifeSpan
     {
         public object Resolve(IAdvancedScope currentScope, Contract contract)

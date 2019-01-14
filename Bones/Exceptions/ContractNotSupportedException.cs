@@ -2,6 +2,7 @@ namespace Bones.Exceptions
 {
     using System;
     using System.Linq;
+    using Internal;
 
     public class ContractNotSupportedException : Exception
     {

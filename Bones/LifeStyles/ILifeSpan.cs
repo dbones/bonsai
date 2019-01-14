@@ -1,6 +1,6 @@
-﻿namespace Bones
+﻿namespace Bones.LifeStyles
 {
-    using System;
+    using Contracts;
 
     public interface ILifeSpan
     {

@@ -2,8 +2,10 @@ namespace Bones.Tests.Resolving.MissingRegistrations
 {
     using System;
     using Exceptions;
+    using LifeStyles;
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels.Service1;
 
     [Ignore("wip")]

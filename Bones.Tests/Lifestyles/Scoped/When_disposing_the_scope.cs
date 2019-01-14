@@ -1,13 +1,15 @@
 namespace Bones.Tests.Lifestyles.Scoped
 {
+    using LifeStyles;
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service1;
-    using Named = Bones.Named;
-    using Singleton = Bones.Singleton;
-    using Transient = Bones.Transient;
+    using Named = LifeStyles.Named;
+    using Singleton = LifeStyles.Singleton;
+    using Transient = LifeStyles.Transient;
 
     [Subject("ScopedLifeScope")]
     public class When_disposing_the_scope 

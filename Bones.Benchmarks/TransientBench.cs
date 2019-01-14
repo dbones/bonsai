@@ -6,6 +6,8 @@ namespace Bones.Benchmarks
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Windsor;
     using Grace.DependencyInjection;
+    using LifeStyles;
+    using Registry;
     using ContainerBuilder = Bones.ContainerBuilder;
 
     public class TransientBench : ContainerBenchmarks

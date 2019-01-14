@@ -1,7 +1,9 @@
 namespace Bones.Tests.Resolving.Dependencies
 {
+    using LifeStyles;
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service2;

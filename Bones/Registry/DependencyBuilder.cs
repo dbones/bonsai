@@ -1,4 +1,4 @@
-﻿namespace Bones
+﻿namespace Bones.Registry
 {
     using System.Reflection;
 

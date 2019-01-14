@@ -1,6 +1,7 @@
-﻿namespace Bones
+﻿namespace Bones.LifeStyles
 {
-    using System;
+    using Contracts;
+    using Internal;
 
     public class Transient : ILifeSpan
     {

@@ -2,10 +2,11 @@ namespace Bones.Tests.Lifestyles.Named
 {
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels.Logger;
     using TestModels.Service1;
-    using Named = Bones.Named;
-    using Transient = Bones.Transient;
+    using Named = LifeStyles.Named;
+    using Transient = LifeStyles.Transient;
 
     [Subject("NamedLifeScope")]
     public class When_resolving_a_service 

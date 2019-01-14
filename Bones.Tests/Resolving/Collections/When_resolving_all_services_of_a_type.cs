@@ -2,8 +2,10 @@ namespace Bones.Tests.Resolving.Collections
 {
     using System.Collections.Generic;
     using System.Linq;
+    using LifeStyles;
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels;
     using TestModels.Logger;
     using TestModels.Service1;

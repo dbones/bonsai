@@ -2,6 +2,7 @@ namespace Bones.Tests.Lifestyles.ProvidedInstance
 {
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels.Logger;
     using TestModels.Service1;
 

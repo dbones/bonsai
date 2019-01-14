@@ -1,6 +1,8 @@
 ﻿namespace Bones.TestApp
 {
     using System;
+    using LifeStyles;
+    using Registry;
     using Tests.TestModels.DataStore;
     using Tests.TestModels.Logger;
     using Tests.TestModels.Repository;

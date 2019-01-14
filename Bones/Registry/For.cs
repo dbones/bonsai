@@ -1,6 +1,7 @@
-﻿namespace Bones
+﻿namespace Bones.Registry
 {
     using System.Reflection;
+    using Internal;
 
     public class For
     {

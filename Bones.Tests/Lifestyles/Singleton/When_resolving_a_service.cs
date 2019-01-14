@@ -3,10 +3,11 @@ namespace Bones.Tests.Lifestyles.Singleton
     using System;
     using Machine.Specifications;
     using PowerAssert;
+    using Registry;
     using TestModels.Logger;
     using TestModels.Service1;
-    using Singleton = Bones.Singleton;
-    using Transient = Bones.Transient;
+    using Singleton = LifeStyles.Singleton;
+    using Transient = LifeStyles.Transient;
 
     [Subject("SingletonLifeScope")]
     public class When_resolving_a_service 

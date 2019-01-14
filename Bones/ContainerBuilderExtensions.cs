@@ -1,6 +1,7 @@
 ﻿namespace Bones
 {
     using System;
+    using Registry;
 
     public static class ContainerBuilderExtensions
     {

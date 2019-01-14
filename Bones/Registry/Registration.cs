@@ -1,8 +1,10 @@
-﻿namespace Bones
+﻿namespace Bones.Registry
 {
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using Internal;
+    using LifeStyles;
 
     public class Registration
     {

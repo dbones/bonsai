@@ -5,6 +5,8 @@ namespace Bones.Benchmarks
     using Castle.MicroKernel.Registration;
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Windsor;
+    using LifeStyles;
+    using Registry;
     using ContainerBuilder = Bones.ContainerBuilder;
 
     public class ScopeBench : ContainerBenchmarks

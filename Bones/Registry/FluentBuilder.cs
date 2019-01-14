@@ -1,10 +1,11 @@
-﻿namespace Bones
+﻿namespace Bones.Registry
 {
     using System;
-    using System.Data;
     using System.Linq;
     using System.Reflection;
     using Exceptions;
+    using Internal;
+    using LifeStyles;
 
     public class FluentBuilder
     {

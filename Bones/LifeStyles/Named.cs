@@ -1,6 +1,8 @@
-﻿namespace Bones
+﻿namespace Bones.LifeStyles
 {
+    using Contracts;
     using Exceptions;
+    using Internal;
 
     public class Named : ILifeSpan
     {
