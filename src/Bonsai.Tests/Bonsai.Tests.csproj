@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.msbuild" Version="2.4.0" />
+        <PackageReference Include="Machine.Specifications" Version="0.12.0" />
+        <PackageReference Include="Machine.Specifications.Runner.VisualStudio" Version="2.7.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+        <PackageReference Include="PowerAssert" Version="1.0.85" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bonsai\Bonsai.csproj" />
+    </ItemGroup>
+
+</Project>
