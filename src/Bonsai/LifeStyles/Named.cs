@@ -22,7 +22,7 @@
                 };
 
                 scope.InstanceCache.Add(contract.Id, entry);
-                scope.Tracked.Push(entry);
+                scope.TrackInstance(entry);
             }
  
             return entry.Value;

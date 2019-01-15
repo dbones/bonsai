@@ -13,7 +13,7 @@
                 Contract = contract
             };
             
-            currentScope.Tracked.Push(instance);
+            currentScope.TrackInstance(instance);
             
             return instance.Value;
         }

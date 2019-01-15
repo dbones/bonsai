@@ -9,19 +9,24 @@
 
     public class Scope : IAdvancedScope
     {
+        private readonly Collections.LinkedList<Instance> _tracked;
+        
         public Scope(ContractRegistry contractRegistry, Scope parentScope = null, string name = "scope")
         {
             Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
             InstanceCache = new SimpleCache<string, Instance>(5);
-            Tracked = new Stack<Instance>(10);
+            _tracked = new Collections.LinkedList<Instance>();
         }
 
         public ICache<string, Instance> InstanceCache { get; }
 
-        public Stack<Instance> Tracked { get; }
-
+        public void TrackInstance(Instance instance)
+        {
+            _tracked.AddNode(instance);
+        }
+        
         public ContractRegistry Contracts { get; }
         public Scope ParentScope { get; }
         public string Name { get; }
@@ -54,7 +59,7 @@
 
         public void Dispose()
         {
-            while (Tracked.TryPop(out var instance))
+            foreach (var instance in _tracked.GetItems())
             {
                 instance.Contract.DisposeInstance(instance.Value);
             }

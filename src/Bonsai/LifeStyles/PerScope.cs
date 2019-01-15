@@ -19,7 +19,7 @@
                 currentScope.InstanceCache.Add(contract.Id, entry);
             }
 
-            currentScope.Tracked.Push(entry);
+            currentScope.TrackInstance(entry);
 
             return entry.Value;
         }

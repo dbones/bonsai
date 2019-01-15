@@ -10,8 +10,8 @@ namespace Bonsai
         ContractRegistry Contracts { get; }
         
         ICache<string, Instance> InstanceCache { get; }
-        
-        Stack<Instance> Tracked { get; }
+
+        void TrackInstance(Instance instance);
 
         string Name { get; }
 
