@@ -1,16 +1,13 @@
 namespace Bonsai.Types
 {
     using System;
+    using Contracts;
 
     public class LazyService<T> : Lazy<T>
     {
-        private readonly IScope _scope;
-
-        public LazyService(IScope scope)
+        public LazyService(IAdvancedScope scope, Contract contract)
+            : base(() => scope.Resolve<T>())
         {
-            _scope = scope;
         }
-        
-        
     }
 }

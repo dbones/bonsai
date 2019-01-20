@@ -2,7 +2,9 @@
 {
     using System;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
+    using Contracts;
     using Exceptions;
     using Internal;
     using LifeStyles;
@@ -48,8 +50,20 @@
 //            return this;
 //        }
 
-        public FluentBuilder DependsOn(RegistrationDependency dependency)
+        
+        public FluentBuilder DependsOn(Action<For> @for, Expression<CreateInstance> resolveValue)
         {
+            var dependency = new RegistrationDependency();
+            var config = new For(dependency);
+            @for(config);
+
+            if (resolveValue != null)
+            {
+                var compiled = resolveValue.Compile();
+                dependency.CreateInstance = (scope, contract, parentContract) => compiled(scope, contract, parentContract);
+            }
+            
+            
             Registration.Dependencies.Add(dependency);
             return this;
         }
@@ -83,18 +97,12 @@
                 throw new ServiceDoesNotImplementContractException(contract, Registration.ImplementedType);
             }
 
-            if (Registration.Types.Any(serviceKey=> serviceKey.ServiceName == name))
+            if (Registration.Types.Any(serviceKey=> serviceKey.ServiceName == name && serviceKey.Service == typeof(TContract)))
             {
                 throw new DuplicateNamedContractException(contract, name);
             }
             
             Registration.Types.Add(new ServiceKey(typeof(TContract).GetTypeInfo(), name));
-            return this;
-        }
-
-        public FluentBuilder<TService> DependsOn(RegistrationDependency dependency)
-        {
-            Registration.Dependencies.Add(dependency);
             return this;
         }
 

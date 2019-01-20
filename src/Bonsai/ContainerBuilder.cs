@@ -13,6 +13,11 @@
     {
         private readonly List<Registration> _registrations = new List<Registration>();
 
+        public ContainerBuilder()
+        {
+            this.SetupModules(new InternalModule());
+        }
+
         /// <summary>
         /// setup the container via many modules.
         /// </summary>

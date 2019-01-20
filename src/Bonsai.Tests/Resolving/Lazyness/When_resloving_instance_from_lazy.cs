@@ -9,7 +9,6 @@ namespace Bonsai.Tests.Resolving.Lazyness
     using TestModels.Logger;
     using TestModels.Service1;
 
-    [Ignore("wip")]
     [Subject("Container")]
     public class When_resloving_instance_from_lazy 
     {
@@ -19,22 +18,22 @@ namespace Bonsai.Tests.Resolving.Lazyness
             builder.SetupModules(new RegisterContracts());
             var container = builder.Create();
             var scope = container.CreateScope();
-            _subject = scope.Resolve<Lazy<IService>>();
+            _subject = scope.Resolve<LazyService>();
         };
 
-        private Because of = () => _service = _subject.Value;
+        private Because of = () => _service = _subject.Logger.Value;
 
-        It should_indicate_instance_has_been_created = () => PAssert.IsTrue(() => _subject.IsValueCreated);
-        It should_provide_a_lazy_instance = () => PAssert.IsTrue(() => _service is ServiceWithCtor);
+        It should_indicate_instance_has_been_created = () => PAssert.IsTrue(() => _subject.Logger.IsValueCreated);
+        It should_provide_a_lazy_instance = () => PAssert.IsTrue(() => _service is LoggerPlain);
 
-        static IService _service;
-        static Lazy<IService> _subject;
+        static ILogger _service;
+        static LazyService _subject;
 
         class RegisterContracts : IModule
         {
             public void Setup(ContainerBuilder builder)
             {
-                builder.Register<ServiceWithCtor>().As<IService>().Scoped<Transient>();
+                builder.Register<LazyService>().As<LazyService>().Scoped<Transient>();
                 builder.Register<LoggerPlain>().As<ILogger>().Scoped<Transient>();
             }
         }

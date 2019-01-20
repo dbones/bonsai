@@ -37,7 +37,9 @@ namespace Bonsai.PreContainer
 
             public void Plan(Registration registration)
             {
-                if (registration.Constructor != null || registration.Instance != null)
+                if (registration.Constructor != null 
+                    || registration.Instance != null 
+                    || registration.ImplementedType == typeof(Scope))
                 {
                     return;
                 }
@@ -97,7 +99,9 @@ namespace Bonsai.PreContainer
                     };
 
 
-                    if (planned?.Value != null || containsPlannedType())
+                    if (planned?.Value != null 
+                        || planned?.CreateInstance != null 
+                        || containsPlannedType())
                     {
                         extraPoints += 5;
                         return true;

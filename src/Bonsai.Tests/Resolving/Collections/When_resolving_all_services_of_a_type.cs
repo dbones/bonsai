@@ -10,7 +10,6 @@ namespace Bonsai.Tests.Resolving.Collections
     using TestModels.Logger;
     using TestModels.Service1;
 
-    [Ignore("work in progress")]
     [Subject("Container")]
     public class When_resolving_all_services_of_a_type 
     {
@@ -41,6 +40,7 @@ namespace Bonsai.Tests.Resolving.Collections
             public void Setup(ContainerBuilder builder)
             {
                 builder.Register<ClassMonitor>().As<ClassMonitor>().Scoped<Singleton>();
+                builder.Register<AggregateService>().As<AggregateService>();
                 builder.Register<ServiceWithCtorAndDisposable>().As<IService>("named").Scoped<Singleton>();
                 builder.Register<ServiceWithCtor>().As<IService>().Scoped<Transient>();
                 builder.Register<LoggerPlain>().As<ILogger>().Scoped<Transient>();

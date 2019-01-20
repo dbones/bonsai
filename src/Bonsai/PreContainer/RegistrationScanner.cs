@@ -21,7 +21,9 @@ namespace Bonsai.PreContainer
 
         public IEnumerable<RegistrationContext> Scan()
         {
-            foreach (var registration in _registrations.Where(x => !x.ImplementedType.IsGenericType))
+            foreach (var registration in _registrations
+                .Where(x => !x.ImplementedType.IsGenericType)
+                )
             {
                 GetServiceKeys(registration);
             }
@@ -51,11 +53,14 @@ namespace Bonsai.PreContainer
             RegistrationContext context = new RegistrationContext();
             context.Registration = registration;
             _contexts.Add(hash, context);
-            if (registration.Instance != null)
+            
+            //object provided or delegate provided
+            if (registration.Instance != null || registration.CreateInstance != null)
             {
                 context.Keys = registration.Types;
                 return;
             }
+            
 
             var constructor = new MethodInformation()
             {
@@ -117,15 +122,26 @@ namespace Bonsai.PreContainer
             {
                 var dependency =
                     registration.Dependencies.FirstOrDefault(x =>
-                        x.ParameterName == parameter.Name
+                        x.ParameterPredicates.All(pred => pred(parameter))
                         && x.InjectOn == InjectOn.Constructor);
-
+                
                 if (dependency?.Value != null)
                 {
                     constructor.Parameters.Add(new ParameterInformation()
                     {
                         Name = parameter.Name,
                         Value = dependency.Value
+                    });
+                    continue;
+                }
+
+                if (dependency?.CreateInstance != null)
+                {
+                    constructor.Parameters.Add(new ParameterInformation()
+                    {
+                        Name = parameter.Name,
+                        ProvidedType = dependency.RequiredType,
+                        CreateInstance = dependency.CreateInstance
                     });
                     continue;
                 }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using Contracts;
 
     public class RegistrationDependency
     {
@@ -38,6 +39,8 @@
         /// an instance/value to use
         /// </summary>
         public object Value { get; set; }
+
+        public CreateInstance CreateInstance { get; set; }
 
         /// <summary>
         /// the injection we are going to apply

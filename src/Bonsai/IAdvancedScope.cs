@@ -1,6 +1,6 @@
 namespace Bonsai
 {
-    using System.Collections.Generic;
+    using System.Security.Cryptography.X509Certificates;
     using Collections;
     using Contracts;
     using Internal;
@@ -17,8 +17,8 @@ namespace Bonsai
 
         object Resolve(ServiceKey serviceKey);
 
-        object Resolve(Contract contract);
-
+        object Resolve(Contract contract, Contract parentContract = null);
+        
         Scope ParentScope { get; }
     }
 }

@@ -8,7 +8,7 @@
     {
         public string Name { get; set; }
 
-        public object Resolve(IAdvancedScope  currentScope, Contract contract)
+        public object Resolve(IAdvancedScope  currentScope, Contract contract, Contract parentContract)
         {
             var scope = GetNamedScope(currentScope, Name);
             var entry = scope.InstanceCache.Get(contract.Id);
@@ -17,7 +17,7 @@
             {
                 entry = new Instance()
                 {
-                    Value = contract.CreateInstance(currentScope),
+                    Value = contract.CreateInstance(currentScope, contract, parentContract),
                     Contract = contract
                 };
 

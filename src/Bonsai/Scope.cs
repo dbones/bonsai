@@ -10,7 +10,7 @@
     public class Scope : IAdvancedScope
     {
         private readonly Collections.LinkedList<Instance> _tracked;
-        
+
         public Scope(ContractRegistry contractRegistry, Scope parentScope = null, string name = "scope")
         {
             Name = name;
@@ -18,31 +18,30 @@
             ParentScope = parentScope;
             InstanceCache = new SimpleCache<string, Instance>(5);
             _tracked = new Collections.LinkedList<Instance>();
+
+            InstanceCache.Add("scope", new Instance() {Value = this, Contract = Contracts.ScopeContract});
         }
 
         public ICache<string, Instance> InstanceCache { get; }
+        public ContractRegistry Contracts { get; }
+
+        public Scope ParentScope { get; }
+        public string Name { get; }
 
         public void TrackInstance(Instance instance)
         {
             _tracked.AddNode(instance);
         }
-        
-        public ContractRegistry Contracts { get; }
-        public Scope ParentScope { get; }
-        public string Name { get; }
 
         public object Resolve(ServiceKey serviceKey)
         {
-            //Code.Require(()=> serviceKey != null, nameof(serviceKey));
-
             var contract = Contracts.GetContract(serviceKey);
             return contract.LifeSpan.Resolve(this, contract);
         }
-        
-        public object Resolve(Contract contract)
+
+        public object Resolve(Contract contract, Contract parentContract = null)
         {
-            //Code.Require(()=> contract != null, nameof(contract));
-            return contract.LifeSpan.Resolve(this, contract);
+            return contract.LifeSpan.Resolve(this, contract, parentContract);
         }
 
         public TService Resolve<TService>(string serviceName = "default")

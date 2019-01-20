@@ -5,11 +5,11 @@
 
     public class Transient : ILifeSpan
     {
-        public object Resolve(IAdvancedScope currentScope, Contract contract)
+        public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
             var instance = new Instance()
             {
-                Value = contract.CreateInstance(currentScope),
+                Value = contract.CreateInstance(currentScope, contract, parentContract),
                 Contract = contract
             };
             

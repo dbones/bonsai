@@ -2,17 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Reflection;
+    using Contracts;
     using Internal;
     using LifeStyles;
 
+    [DebuggerDisplay("{ImplementedType} [{Types.Count}]")]
     public class Registration
     {
         private readonly string _hash = Guid.NewGuid().ToString();
 
         public Registration()
         {
-            ScopedTo = new Singleton();
+            ScopedTo = new Transient();
         }
 
         public string Id => _hash;
@@ -59,7 +62,10 @@
         /// </summary>
         public List<MethodBase> InjectableMethods { get; set; } = new List<MethodBase>();
         
-        //public Func<ResolvingContext, object> Constructor { get; set; }
+        /// <summary>
+        /// a delegate which you can provide in order to create the instance
+        /// </summary>
+        public CreateInstance CreateInstance{ get; set; }
 
         /// <summary>
         /// the scope of which an instance will live for

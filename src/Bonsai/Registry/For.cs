@@ -31,6 +31,7 @@
             _dependency.RequiredType = typeof(T);
 
             _dependency.ParameterPredicates.Add(parameter => parameter.ParameterType == _dependency.RequiredType);
+            
 
             return new DependencyBuilder(_dependency);
         }
