@@ -6,7 +6,7 @@
 
     public class Named : ILifeSpan
     {
-        public string Name { get; set; }
+        public string Name { private get; set; }        
 
         public object Resolve(IAdvancedScope  currentScope, Contract contract, Contract parentContract)
         {

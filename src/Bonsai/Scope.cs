@@ -3,21 +3,28 @@
     using System;
     using System.Collections.Generic;
     using Collections;
+    using Collections.LinkedLists;
     using Contracts;
     using Internal;
 
 
     public class Scope : IAdvancedScope
     {
-        private readonly Collections.LinkedList<Instance> _tracked;
+        private readonly ILinkedList<Instance> _tracked;
 
-        public Scope(ContractRegistry contractRegistry, Scope parentScope = null, string name = "scope")
+        
+        public Scope(
+            ContractRegistry contractRegistry, 
+            Scope parentScope = null, 
+            string name = "scope",
+            ILinkedList<Instance> trackingCollection = null,
+            ICache<string, Instance> cachingCollection = null)
         {
             Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
-            InstanceCache = new SimpleCache<string, Instance>(5);
-            _tracked = new Collections.LinkedList<Instance>();
+            InstanceCache = cachingCollection ?? new SimpleCache<string, Instance>(5);
+            _tracked = trackingCollection ?? new Collections.LinkedLists.LinkedList<Instance>();
 
             InstanceCache.Add("scope", new Instance() {Value = this, Contract = Contracts.ScopeContract});
         }
@@ -30,7 +37,7 @@
 
         public void TrackInstance(Instance instance)
         {
-            _tracked.AddNode(instance);
+            _tracked.Add(instance);
         }
 
         public object Resolve(ServiceKey serviceKey)
@@ -58,7 +65,7 @@
 
         public void Dispose()
         {
-            foreach (var instance in _tracked.GetItems())
+            foreach (var instance in _tracked.GetAll())
             {
                 instance.Contract.DisposeInstance(instance.Value);
             }
@@ -69,4 +76,5 @@
             return new Scope(Contracts, this, name);
         }
     }
+    
 }

@@ -12,3 +12,4 @@ images/Untitled-1.svg
 images/Untitled-1.ai
 images/HIROSHT.TTF
 src/Bonsai.Tests/coverage.opencover.xml
+*.trx

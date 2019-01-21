@@ -1,6 +1,8 @@
 ﻿namespace Bonsai
 {
     using System.Collections.Generic;
+    using Collections;
+    using Collections.LinkedLists;
     using Contracts;
     using Internal;
     using PreContainer;
@@ -50,7 +52,12 @@
             var contexts = new DelegateBuilder().Create(registrationContexts);
             var contractRegistry = new ContractRegistry(contexts);
 
-            return new Scope(contractRegistry, null, "singleton");
+            return new Scope(
+                contractRegistry, 
+                null, 
+                "singleton",
+                new ConcurrentLinkedList<Instance>(),
+                new ConcurrentCache<string, Instance>(5));
         }
 
         /// <summary>

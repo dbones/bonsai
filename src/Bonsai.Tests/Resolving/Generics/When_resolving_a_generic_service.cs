@@ -33,6 +33,7 @@ namespace Bonsai.Tests.Resolving.Generics
             {
                 builder.Register(typeof(DataStorePlain<>))
                     .As(typeof(IDataStore<>))
+                    .As<IDataStore<User>>()
                     .Scoped<Transient>();
             }
         }
