@@ -1,4 +1,4 @@
-namespace Bonsai.Collections
+namespace Bonsai.Collections.Caching
 {
     public interface ICache<TKey, TValue> where TValue : class
     {

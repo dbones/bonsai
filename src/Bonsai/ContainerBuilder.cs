@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using Collections;
+    using Collections.Caching;
     using Collections.LinkedLists;
     using Contracts;
     using Internal;

@@ -1,4 +1,4 @@
-namespace Bonsai.Collections
+namespace Bonsai.Collections.Caching
 {
     using System.Collections.Generic;
 
