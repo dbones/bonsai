@@ -106,9 +106,10 @@ namespace Bonsai.PreContainer
 
                 constructor.Method = c;
                 context.ImplementedType = type;
-                context.Keys = registration.Types.Select(t => t.Service.IsGenericTypeDefinition 
+                context.Keys = new HashSet<ServiceKey>( 
+                    registration.Types.Select(t => t.Service.IsGenericTypeDefinition 
                     ? new ServiceKey(t.Service.MakeGenericType(type.GenericTypeArguments), t.ServiceName) 
-                    : t).ToHashSet();
+                    : t));
             }
             else
             {
