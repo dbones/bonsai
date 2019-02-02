@@ -22,7 +22,7 @@ namespace Bonsai.PreContainer
         public IEnumerable<RegistrationContext> Scan()
         {
             foreach (var registration in _registrations
-                .Where(x => !x.ImplementedType.IsGenericType)
+                .Where(x => !x.ImplementedType.IsGenericTypeDefinition)
                 )
             {
                 GetServiceKeys(registration);
@@ -39,7 +39,7 @@ namespace Bonsai.PreContainer
             Code.Require(() => registration != null, nameof(registration));
 
             string hash;
-            hash = registrationType?.IsGenericType == true
+            hash = registrationType?.IsGenericType == true && registration.ImplementedType.IsGenericTypeDefinition == true
                 ? $"{registration.Id} {registration.ImplementedType.MakeGenericType(registrationType.GenericTypeArguments)}"
                 : $"{registration.Id} {registration.ImplementedType.FullName}";
 

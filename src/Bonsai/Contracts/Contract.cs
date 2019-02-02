@@ -2,6 +2,7 @@ namespace Bonsai.Contracts
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Internal;
     using LifeStyles;
     using PreContainer;
@@ -40,5 +41,11 @@ namespace Bonsai.Contracts
         /// a simple id, mainly used to help with creating this contract and setting it up
         /// </summary>
         public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        public override string ToString()
+        {
+            var keys = string.Join(" ", ServiceKeys.Select(x => x.ToString()));
+            return $"{LifeSpan?.GetType().Name} {keys} ";
+        }
     }
 }
