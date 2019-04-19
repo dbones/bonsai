@@ -7,7 +7,7 @@
     {
         public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
-            var instance = new Instance()
+            var instance = new Instance
             {
                 Value = contract.CreateInstance(currentScope, contract, parentContract),
                 Contract = contract

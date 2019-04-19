@@ -5,16 +5,20 @@ namespace Bonsai.Internal
     /// <summary>
     /// simple guard class
     /// </summary>
-    public static class Code 
+    public static class Code
     {
         /// <summary>
         /// requires that code passes a predicate
         /// </summary>
         /// <param name="predicate">a truthful statement that is require to pass</param>
         /// <param name="ex">the exception th throw</param>
-        public static void Require<T>(Func<bool> predicate, Func<T> ex) where T: Exception
+        public static void Require<T>(Func<bool> predicate, Func<T> ex) where T : Exception
         {
-            if (predicate()) return;
+            if (predicate())
+            {
+                return;
+            }
+
             throw ex();
         }
 
@@ -26,7 +30,11 @@ namespace Bonsai.Internal
         /// <exception cref="ArgumentException"></exception>
         public static void Require(Func<bool> predicate, string name)
         {
-            if (predicate()) return;
+            if (predicate())
+            {
+                return;
+            }
+
             throw new ArgumentException(name);
         }
 
@@ -36,11 +44,14 @@ namespace Bonsai.Internal
         /// <param name="predicate"></param>
         /// <param name="ex"></param>
         /// <typeparam name="T"></typeparam>
-        public static void Ensure<T>(Func<bool> predicate, Func<T> ex) where T: Exception
+        public static void Ensure<T>(Func<bool> predicate, Func<T> ex) where T : Exception
         {
-            if (predicate()) return;
+            if (predicate())
+            {
+                return;
+            }
+
             throw ex();
         }
-
     }
 }

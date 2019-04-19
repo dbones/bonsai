@@ -15,10 +15,11 @@ namespace Bonsai.PreContainer
     {
         public IEnumerable<Contract> Create(IEnumerable<RegistrationContext> contexts)
         {
+            contexts = contexts.ToList();
             var contracts = new List<Contract>();
             foreach (var context in contexts)
             {
-                var contract = new Contract()
+                var contract = new Contract
                 {
                     Id = context.Id,
                     LifeSpan = context.Registration.ScopedTo,
@@ -36,7 +37,7 @@ namespace Bonsai.PreContainer
                     contract.DisposeInstance = NoOpDisposal;
                 }
 
-                contracts.Add( contract);
+                contracts.Add(contract);
             }
 
 
@@ -49,17 +50,26 @@ namespace Bonsai.PreContainer
             return contracts;
         }
 
-        void NoOpDisposal(object instance)
+        /// <summary>
+        /// this is a simple do nothing on disposal method
+        /// </summary>
+        /// <param name="instance">the instance which this method will execute against</param>
+        private static void NoOpDisposal(object instance)
         {
+            //TODO: look to improve on how we track disposables.
         }
 
-        void Disposal(object instance)
+        /// <summary>
+        /// this will invoke the disposable on a method.
+        /// </summary>
+        /// <param name="instance">the instance which this method will execute against</param>
+        private static void Disposal(object instance)
         {
             ((IDisposable) instance).Dispose();
         }
 
 
-        CreateInstance Create(RegistrationContext context, IEnumerable<Contract> contracts)
+        private static CreateInstance Create(RegistrationContext context, IEnumerable<Contract> contracts)
         {
             if (context.Registration.Instance != null) return null;
             if (context.Registration.CreateInstance != null) return context.Registration.CreateInstance;
@@ -75,7 +85,7 @@ namespace Bonsai.PreContainer
             //var parentContractParam = Expression.Constant(parentContract); 
             var parentContractParam = Expression.Parameter(typeof(Contract));
             
-            var resolve = typeof(IAdvancedScope).GetMethod("Resolve", new Type[]
+            var resolve = typeof(IAdvancedScope).GetMethod("Resolve", new[]
             {
                 typeof(Contract),
                 typeof(Contract)
@@ -107,8 +117,17 @@ namespace Bonsai.PreContainer
                     createParams.Add(con);
                     continue;
                 }
-                
-                var contract = contracts.First(x => x.ServiceKeys.Contains(p.ServiceKey));
+
+                Contract contract;
+                try
+                {
+                    contract = contracts.First(x => x.ServiceKeys.Contains(p.ServiceKey));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
                 Expression constantExpr = Expression.Constant(contract);
                 MethodCallExpression resolveParam = Expression.Call(
                     scopeParam,

@@ -1,6 +1,6 @@
 namespace Bonsai.Collections.Caching
 {
-    public interface ICache<TKey, TValue> where TValue : class
+    public interface ICache<in TKey, TValue> where TValue : class
     {
         int Count { get; }
         TValue Get(TKey key);

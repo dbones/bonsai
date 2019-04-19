@@ -5,7 +5,7 @@ namespace Bonsai.Internal
     /// <summary>
     /// a unique key for a service
     /// </summary>
-    public class ServiceKey
+    public class ServiceKey : IEquatable<ServiceKey>
     {
         private readonly string _internalName;
         private readonly int _hash;
@@ -26,6 +26,12 @@ namespace Bonsai.Internal
         public override string ToString()
         {
             return $"Key: {_internalName}";
+        }
+
+        public bool Equals(ServiceKey other)
+        {
+            if (other == null) {return false;}
+            return _hash == other.GetHashCode();
         }
 
         public override bool Equals(object obj)

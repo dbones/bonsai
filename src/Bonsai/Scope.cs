@@ -13,10 +13,10 @@
     {
         private readonly ILinkedList<Instance> _tracked;
 
-        
+
         public Scope(
-            ContractRegistry contractRegistry, 
-            Scope parentScope = null, 
+            ContractRegistry contractRegistry,
+            Scope parentScope = null,
             string name = "scope",
             ILinkedList<Instance> trackingCollection = null,
             ICache<string, Instance> cachingCollection = null)
@@ -27,7 +27,7 @@
             InstanceCache = cachingCollection ?? new SimpleCache<string, Instance>(5);
             _tracked = trackingCollection ?? new Collections.LinkedLists.LinkedList<Instance>();
 
-            InstanceCache.Add("scope", new Instance() {Value = this, Contract = Contracts.ScopeContract});
+            InstanceCache.Add("scope", new Instance { Value = this, Contract = Contracts.ScopeContract });
         }
 
         public ICache<string, Instance> InstanceCache { get; }
@@ -64,7 +64,7 @@
         }
 
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             foreach (var instance in _tracked.GetAll())
             {
@@ -77,5 +77,4 @@
             return new Scope(Contracts, this, name);
         }
     }
-    
 }

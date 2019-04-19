@@ -2,7 +2,6 @@ namespace Bonsai.Internal
 {
     using System;
     using System.Collections.Generic;
-    using System.Xml.Linq;
     using Contracts;
     using LifeStyles;
     using Registry;

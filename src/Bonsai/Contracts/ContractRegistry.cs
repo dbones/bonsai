@@ -2,6 +2,7 @@ namespace Bonsai.Contracts
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Design;
     using System.Linq;
     using System.Runtime.InteropServices;
     using Exceptions;
@@ -12,8 +13,9 @@ namespace Bonsai.Contracts
     /// </summary>
     public class ContractRegistry
     {
-        private IDictionary<ServiceKey, Contract> _contracts;
-        private IDictionary<Type, List<Contract>> _contractsByType;
+        private readonly IDictionary<ServiceKey, Contract> _contracts;
+        private readonly IDictionary<Type, List<Contract>> _contractsByType;
+        private int _counter = 0;
 
         public ContractRegistry(IEnumerable<Contract> contracts)
         {
@@ -23,8 +25,17 @@ namespace Bonsai.Contracts
             {
                 foreach (var key in contract.ServiceKeys)
                 {
-                    //main lookup
-                    _contracts.Add(key, contract);
+                    if (key.ServiceName == "default" && _contracts.TryGetValue(key, out var oldDefault))
+                    {
+                        _counter++;
+                        _contracts[key] = contract;
+                        var renamedKey = new ServiceKey(key.Service, $"{key.ServiceName}-{_counter}");
+                        _contracts.Add(renamedKey, oldDefault);
+                    }
+                    else
+                    {
+                        _contracts.Add(key, contract);
+                    }
 
                     //list lookup
                     if (!_contractsByType.TryGetValue(key.Service, out var contractsForType))
@@ -38,9 +49,9 @@ namespace Bonsai.Contracts
                         contractsForType.Add(contract);
                     }
                 }
-                
+
                 //scope lookup
-                if (contract.ServiceKeys.Any(x=> typeof(IScope).IsAssignableFrom(x.Service)))
+                if (contract.ServiceKeys.Any(x => typeof(IScope).IsAssignableFrom(x.Service)))
                 {
                     ScopeContract = contract;
                 }

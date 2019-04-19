@@ -15,7 +15,7 @@
 
             if (entry == null)
             {
-                entry = new Instance()
+                entry = new Instance
                 {
                     Value = contract.CreateInstance(currentScope, contract, parentContract),
                     Contract = contract

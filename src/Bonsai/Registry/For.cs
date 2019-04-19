@@ -5,7 +5,7 @@
 
     public class For
     {
-        private RegistrationDependency _dependency;
+        private readonly RegistrationDependency _dependency;
 
         public For(RegistrationDependency dependency)
         {

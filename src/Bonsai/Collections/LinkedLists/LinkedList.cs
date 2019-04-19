@@ -9,7 +9,7 @@ namespace Bonsai.Collections.LinkedLists
 
         public virtual void Add(T item)
         {
-            _firstNode = new Node<T>()
+            _firstNode = new Node<T>
             {
                 Next = _firstNode,
                 Value = item
@@ -19,7 +19,7 @@ namespace Bonsai.Collections.LinkedLists
 
         public virtual IEnumerable<T> GetAll()
         {
-            Node<T> node = _firstNode;
+            var node = _firstNode;
             while (node != null)
             {
                 yield return node.Value;
