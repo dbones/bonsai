@@ -22,7 +22,7 @@ namespace Bonsai.Collections.LinkedLists
             }
         }
 
-        public IEnumerable<T> GetAll()
+        public override IEnumerable<T> GetAll()
         {
             try
             {
