@@ -7,17 +7,19 @@
     {
         public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
-            var instance = new Instance
+            var value = contract.CreateInstance(currentScope, contract, parentContract);
+
+            if (contract.IsDisposal)
             {
-                Value = contract.CreateInstance(currentScope, contract, parentContract),
-                Contract = contract
-            };
-            
-            currentScope.TrackInstance(instance);
-            
-            return instance.Value;
+                var instance = new Instance
+                {
+                    Value = value,
+                    Contract = contract
+                };
+                currentScope.TrackInstance(instance);
+            }
+
+            return value;
         }
-        
-        
     }
 }

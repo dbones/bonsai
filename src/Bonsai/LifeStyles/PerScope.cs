@@ -9,16 +9,15 @@
         {
             var entry = currentScope.InstanceCache.Get(contract.Id);
 
-            if (entry == null)
+            if (entry != null) return entry.Value;
+            
+            entry = new Instance
             {
-                entry = new Instance
-                {
-                    Value = contract.CreateInstance(currentScope, contract, parentContract),
-                    Contract = contract
-                };
-                currentScope.InstanceCache.Add(contract.Id, entry);
-            }
-
+                Value = contract.CreateInstance(currentScope, contract, parentContract),
+                Contract = contract
+            };
+            
+            currentScope.InstanceCache.Add(contract.Id, entry);
             currentScope.TrackInstance(entry);
 
             return entry.Value;

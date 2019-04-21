@@ -13,18 +13,17 @@
             var scope = GetNamedScope(currentScope, Name);
             var entry = scope.InstanceCache.Get(contract.Id);
 
-            if (entry == null)
+            if (entry != null) return entry.Value;
+            
+            entry = new Instance
             {
-                entry = new Instance
-                {
-                    Value = contract.CreateInstance(currentScope, contract, parentContract),
-                    Contract = contract
-                };
+                Value = contract.CreateInstance(currentScope, contract, parentContract),
+                Contract = contract
+            };
 
-                scope.InstanceCache.Add(contract.Id, entry);
-                scope.TrackInstance(entry);
-            }
- 
+            scope.InstanceCache.Add(contract.Id, entry);
+            scope.TrackInstance(entry);
+
             return entry.Value;
         }
 
