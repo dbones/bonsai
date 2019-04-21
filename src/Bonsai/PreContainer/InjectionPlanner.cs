@@ -10,7 +10,7 @@ namespace Bonsai.PreContainer
     public class InjectionPlanner
     {
         private readonly RegistrationRegistry _registrations;
-        private ConstructorPlanner _constructorPlanner;
+        private readonly ConstructorPlanner _constructorPlanner;
 
         public InjectionPlanner(RegistrationRegistry registrations)
         {
@@ -87,7 +87,7 @@ namespace Bonsai.PreContainer
                         .Select(x => x.Dependency)
                         .FirstOrDefault();
 
-                    Func<bool> containsPlannedType = () =>
+                    bool ContainsPlannedType()
                     {
                         if (planned == null) return false;
 
@@ -96,12 +96,12 @@ namespace Bonsai.PreContainer
                         var key = new ServiceKey(type, name);
 
                         return _registrations.BySupportingType(key) != null;
-                    };
+                    }
 
 
                     if (planned?.Value != null 
                         || planned?.CreateInstance != null 
-                        || containsPlannedType())
+                        || ContainsPlannedType())
                     {
                         extraPoints += 5;
                         return true;

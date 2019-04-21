@@ -38,7 +38,11 @@
 
         public void TrackInstance(Instance instance)
         {
-            _tracked.Add(instance);
+            if (instance.Contract.IsDisposal)
+            {
+                _tracked.Add(instance);                
+            }
+
         }
 
         public object Resolve(ServiceKey serviceKey)

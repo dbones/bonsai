@@ -6,6 +6,7 @@ namespace Bonsai.Contracts
     using System.Linq;
     using System.Runtime.InteropServices;
     using Exceptions;
+    using ImTools;
     using Internal;
 
     /// <summary>
@@ -13,56 +14,63 @@ namespace Bonsai.Contracts
     /// </summary>
     public class ContractRegistry
     {
-        private readonly IDictionary<ServiceKey, Contract> _contracts;
-        private readonly IDictionary<Type, List<Contract>> _contractsByType;
-        private int _counter = 0;
+        private  ImHashMap<ServiceKey, Contract> _contracts;
+        private  ImHashMap<Type, List<Contract>> _contractsByType;
+        private volatile int _counter = 0;
 
         public ContractRegistry(IEnumerable<Contract> contracts)
         {
-            _contractsByType = new Dictionary<Type, List<Contract>>();
-            _contracts = new Dictionary<ServiceKey, Contract>();
+            _contractsByType = ImHashMap<Type, List<Contract>>.Empty;
+            _contracts = ImHashMap<ServiceKey, Contract>.Empty;
             foreach (var contract in contracts)
             {
-                foreach (var key in contract.ServiceKeys)
+                AddContract(contract);
+            }
+        }
+        
+        public void AddContract(Contract contract)
+        {
+            foreach (var key in contract.ServiceKeys)
+            {
+                if (key.ServiceName == "default" && _contracts.TryFind(key, out var oldDefault))
                 {
-                    if (key.ServiceName == "default" && _contracts.TryGetValue(key, out var oldDefault))
-                    {
-                        _counter++;
-                        _contracts[key] = contract;
-                        var renamedKey = new ServiceKey(key.Service, $"{key.ServiceName}-{_counter}");
-                        _contracts.Add(renamedKey, oldDefault);
-                    }
-                    else
-                    {
-                        _contracts.Add(key, contract);
-                    }
-
-                    //list lookup
-                    if (!_contractsByType.TryGetValue(key.Service, out var contractsForType))
-                    {
-                        contractsForType = new List<Contract>();
-                        _contractsByType.Add(key.Service, contractsForType);
-                    }
-
-                    if (!contractsForType.Contains(contract))
-                    {
-                        contractsForType.Add(contract);
-                    }
+                    _counter++;
+                    _contracts = _contracts.Update(key, contract);
+                    var renamedKey = new ServiceKey(key.Service, $"{key.ServiceName}-{_counter}");
+                    _contracts = _contracts.AddOrUpdate(renamedKey, oldDefault);
+                }
+                else
+                {
+                    _contracts = _contracts.AddOrUpdate(key, contract);
                 }
 
-                //scope lookup
-                if (contract.ServiceKeys.Any(x => typeof(IScope).IsAssignableFrom(x.Service)))
+                //list lookup
+                if (!_contractsByType.TryFind(key.Service, out var contractsForType))
                 {
-                    ScopeContract = contract;
+                    contractsForType = new List<Contract>();
+                    _contractsByType = _contractsByType.AddOrUpdate(key.Service, contractsForType);
                 }
+
+                if (!contractsForType.Contains(contract))
+                {
+                    contractsForType.Add(contract);
+                }
+            }
+
+            //scope lookup
+            if (contract.ServiceKeys.Any(x => typeof(IScope).IsAssignableFrom(x.Service)))
+            {
+                ScopeContract = contract;
             }
         }
 
-        public Contract ScopeContract { get; }
+        public Contract ScopeContract { get; private set; }
 
         public IEnumerable<Contract> GetAllContracts(Type type)
         {
-            return _contractsByType[type];
+            return _contractsByType.TryFind(type,  out var result) 
+                ? result 
+                : Enumerable.Empty<Contract>();
         }
 
         /// <summary>
@@ -73,9 +81,7 @@ namespace Bonsai.Contracts
         /// <exception cref="ContractNotSupportedException">as it suggests</exception>
         public Contract GetContract(ServiceKey serviceKey)
         {
-            //Code.Require(() => serviceKey != null, nameof(serviceKey));
-
-            if (_contracts.TryGetValue(serviceKey, out var entry))
+            if (_contracts.TryFind(serviceKey, out var entry))
             {
                 return entry;
             }

@@ -19,7 +19,7 @@ namespace Bonsai.PreContainer
 
         public bool Contains(ServiceKey key)
         {
-            if (key == null) return false;
+            //if (key == null) return false;
             if (_registrations.Any(x => x.Types.Contains(key)))
             {
                 return true;

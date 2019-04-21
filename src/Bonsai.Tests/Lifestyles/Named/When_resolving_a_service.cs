@@ -11,7 +11,8 @@ namespace Bonsai.Tests.Lifestyles.Named
     [Subject("NamedLifeScope")]
     public class When_resolving_a_service 
     {
-        private Establish context = () => {
+        private Establish context = () => 
+        {
             var builder = new ContainerBuilder();
             builder.SetupModules(new RegisterContracts());
             var container = builder.Create();

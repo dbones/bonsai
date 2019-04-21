@@ -28,6 +28,11 @@ namespace Bonsai.Contracts
         public DisposeInstance DisposeInstance { get; set; }
 
         /// <summary>
+        /// denotes if this type is disposable.
+        /// </summary>
+        public bool IsDisposal { get; set; }
+        
+        /// <summary>
         /// the instance which is provided by the program.
         /// </summary>
         public object Instance { get; set; }

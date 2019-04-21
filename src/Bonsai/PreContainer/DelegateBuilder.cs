@@ -30,10 +30,12 @@ namespace Bonsai.PreContainer
 
                 if (typeof(IDisposable).IsAssignableFrom(context.ImplementedType))
                 {
+                    contract.IsDisposal = true;
                     contract.DisposeInstance = Disposal;
                 }
                 else
                 {
+                    contract.IsDisposal = false;
                     contract.DisposeInstance = NoOpDisposal;
                 }
 
@@ -90,6 +92,7 @@ namespace Bonsai.PreContainer
                 typeof(Contract),
                 typeof(Contract)
             });
+            
             foreach (var param in parameters)
             {
                 var p = param;

@@ -64,29 +64,32 @@ Note: that all the **other** IoC **provide** far **more** features, at the momen
 
 ``` ini
 
-BenchmarkDotNet=v0.11.3, OS=Windows 10.0.17134.523 (1803/April2018Update/Redstone4)
+BenchmarkDotNet=v0.11.3, OS=Windows 10.0.17134.706 (1803/April2018Update/Redstone4)
 Intel Core i7-8550U CPU 1.80GHz (Kaby Lake R), 1 CPU, 8 logical and 4 physical cores
-Frequency=1945311 Hz, Resolution=514.0566 ns, Timer=TSC
+Frequency=1945313 Hz, Resolution=514.0561 ns, Timer=TSC
 .NET Core SDK=2.1.403
   [Host]     : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
-  Job-RHODRM : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
+  Job-DPRFHW : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
 
 InvocationCount=5000  UnrollFactor=50  
 
 ```
-|  Method |        Mean |      Error |     StdDev | Ratio | RatioSD | Rank | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
-|-------- |------------:|-----------:|-----------:|------:|--------:|-----:|------------:|------------:|------------:|--------------------:|
-|   Bonsai |   319.67 ns |  14.575 ns |  41.582 ns |  1.00 |    0.00 |   ** |           - |           - |           - |               538 B |
-| Windsor | 9,144.42 ns | 177.181 ns | 472.931 ns | 28.39 |    3.68 | **** |      1.0000 |           - |           - |              4344 B |
-| Autofac | 1,924.92 ns |  57.994 ns | 170.087 ns |  6.13 |    0.92 |  *** |      0.4000 |           - |           - |              2344 B |
-|   Grace |    43.50 ns |   3.146 ns |   8.874 ns |  0.14 |    0.04 |    * |           - |           - |           - |               104 B |
+|  Method |        Mean |      Error |    StdDev | Ratio | RatioSD | Rank | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
+|-------- |------------:|-----------:|----------:|------:|--------:|-----:|------------:|------------:|------------:|--------------------:|
+|  Bonsai |   150.89 ns |   7.974 ns |  22.49 ns |  1.00 |    0.00 |   ** |           - |           - |           - |               272 B |
+| Windsor | 9,313.65 ns | 186.202 ns | 427.83 ns | 63.38 |    8.87 | **** |      1.0000 |           - |           - |              4344 B |
+| Autofac | 2,014.56 ns |  53.931 ns | 158.17 ns | 13.63 |    2.14 |  *** |      0.4000 |           - |           - |              2344 B |
+|   Grace |    51.81 ns |   4.407 ns |  12.79 ns |  0.35 |    0.10 |    * |           - |           - |           - |               104 B |
+
 
 
 Things we have tired or have yet to try:
 
 * precomiling all delegates - done
 * use a linked list instead of a stack - done
-* remove dependency on the key dictionay (as much as possible) - done 
-* replace dictionary with immutable AVL
+* remove dependency on the key dictionary (as much as possible) - done 
+* replace dictionary with immutable AVL - done
+* get hash code for service keys, not using string concat - done
+* track only disposables - done
 * replace Concurancy with Out of the box concurancy collection
 * look into interlock instead of the lightweigh read write lock

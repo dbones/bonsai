@@ -7,37 +7,32 @@ namespace Bonsai.Internal
     /// </summary>
     public class ServiceKey : IEquatable<ServiceKey>
     {
-        private readonly string _internalName;
         private readonly int _hash;
 
         public ServiceKey(Type service, string serviceName = "default")
         {
-            Code.Require(()=> service != null, nameof(service));
-            
             ServiceName = serviceName;
             Service = service;
-            _internalName = $"{Service.FullName} ^_^ {ServiceName}";
-            _hash = _internalName.GetHashCode();
+            //simple hashing, is the quickest we have atm, but its not full proof
+            _hash = service.GetHashCode() * 31 + serviceName.GetHashCode();
         }
 
-        public string ServiceName { get; protected set; }
-        public Type Service { get; protected set; }
+        public string ServiceName { get; }
+        public Type Service { get; }
 
         public override string ToString()
         {
-            return $"Key: {_internalName}";
+            return $"{Service.FullName} ^_^ {ServiceName}";
         }
 
         public bool Equals(ServiceKey other)
         {
-            if (other == null) {return false;}
-            return _hash == other.GetHashCode();
+            return _hash == other?.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null) return false;
-            return _hash == obj.GetHashCode();
+            return _hash == obj?.GetHashCode();
         }
 
         public override int GetHashCode()
