@@ -10,8 +10,15 @@ namespace Bonsai.Contracts
     /// <summary>
     /// this contains all the information for every concrete instance which can be resolved from the container.
     /// </summary>
-    public class Contract
+    public class Contract :  IEquatable<Contract>
     {
+        private readonly int _hash;
+        public Contract(int id)
+        {
+            _hash = id;
+        }
+        
+        
         /// <summary>
         /// a delegate which will create an instance
         /// </summary>
@@ -45,7 +52,23 @@ namespace Bonsai.Contracts
         /// <summary>
         /// a simple id, mainly used to help with creating this contract and setting it up
         /// </summary>
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public int Id => _hash;
+
+        public bool Equals(Contract other)
+        {
+            return GetHashCode() == other?.GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return _hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var item = obj as Contract;
+            return GetHashCode() == item?.GetHashCode();
+        }
 
         public override string ToString()
         {

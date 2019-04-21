@@ -17,14 +17,14 @@
         public object Resolve(IAdvancedScope  currentScope, Contract contract, Contract parentContract)
         {
             var scope = GetNamedScope(currentScope, _name);
-            var entry = scope.InstanceCache.Get(contract.Id);
+            var entry = scope.InstanceCache.Get(contract);
 
             if (entry != null) return entry.Value;
             
             lock (_singletonScope)
             {
                 //check again.
-                entry = scope.InstanceCache.Get(contract.Id);
+                entry = scope.InstanceCache.Get(contract);
                 if (entry != null) return entry.Value;
                 
                 //create new instance
@@ -34,7 +34,7 @@
                     Contract = contract
                 };
 
-                scope.InstanceCache.Add(contract.Id, entry);
+                scope.InstanceCache.Add(contract, entry);
                 scope.TrackInstance(entry);
             }
 

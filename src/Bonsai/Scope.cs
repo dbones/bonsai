@@ -19,18 +19,18 @@
             Scope parentScope = null,
             string name = "scope",
             ILinkedList<Instance> trackingCollection = null,
-            ICache<string, Instance> cachingCollection = null)
+            ICache<Contract, Instance> cachingCollection = null)
         {
             Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
-            InstanceCache = cachingCollection ?? new SimpleCache<string, Instance>(5);
+            InstanceCache = cachingCollection ?? new SimpleCache<Contract, Instance>(5);
             _tracked = trackingCollection ?? new Collections.LinkedLists.LinkedList<Instance>();
 
-            InstanceCache.Add("scope", new Instance { Value = this, Contract = Contracts.ScopeContract });
+            InstanceCache.Add(Contracts.ScopeContract, new Instance { Value = this, Contract = Contracts.ScopeContract });
         }
 
-        public ICache<string, Instance> InstanceCache { get; }
+        public ICache<Contract, Instance> InstanceCache { get; }
         public ContractRegistry Contracts { get; }
 
         public Scope ParentScope { get; }

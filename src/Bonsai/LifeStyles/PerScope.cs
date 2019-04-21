@@ -7,7 +7,7 @@
     {
         public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
-            var entry = currentScope.InstanceCache.Get(contract.Id);
+            var entry = currentScope.InstanceCache.Get(contract);
 
             if (entry != null) return entry.Value;
             
@@ -17,7 +17,7 @@
                 Contract = contract
             };
             
-            currentScope.InstanceCache.Add(contract.Id, entry);
+            currentScope.InstanceCache.Add(contract, entry);
             currentScope.TrackInstance(entry);
 
             return entry.Value;

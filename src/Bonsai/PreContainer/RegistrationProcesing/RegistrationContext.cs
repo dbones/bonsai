@@ -7,6 +7,11 @@ namespace Bonsai.PreContainer
 
     public class RegistrationContext
     {
+        public RegistrationContext(int id)
+        {
+            Id = id;
+        }
+        
         public List<MethodInformation> InjectOnMethods { get; set; } = new List<MethodInformation>();
         public Registration Registration { get; set; }
 
@@ -14,6 +19,6 @@ namespace Bonsai.PreContainer
 
         public HashSet<ServiceKey> Keys { get; set; } = new HashSet<ServiceKey>();
         
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public int Id { get; }
     }
 }

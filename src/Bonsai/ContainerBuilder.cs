@@ -58,7 +58,7 @@
                 null, 
                 "singleton",
                 new ConcurrentLinkedList<Instance>(),
-                new ConcurrentAvlCache<string, Instance>());
+                new ConcurrentAvlCache<Contract, Instance>());
         }
 
         /// <summary>

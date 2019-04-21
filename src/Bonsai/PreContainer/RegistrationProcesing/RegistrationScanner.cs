@@ -10,6 +10,7 @@ namespace Bonsai.PreContainer
     public class RegistrationScanner
     {
         private readonly RegistrationRegistry _registrations;
+        private int counter = 0;
 
         private readonly Dictionary<string, RegistrationContext> _contexts =
             new Dictionary<string, RegistrationContext>();
@@ -50,7 +51,8 @@ namespace Bonsai.PreContainer
                 return;
             }
 
-            RegistrationContext context = new RegistrationContext();
+            counter++;
+            RegistrationContext context = new RegistrationContext(counter);
             context.Registration = registration;
             _contexts.Add(hash, context);
             

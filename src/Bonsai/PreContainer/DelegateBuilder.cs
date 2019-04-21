@@ -19,9 +19,8 @@ namespace Bonsai.PreContainer
             var contracts = new List<Contract>();
             foreach (var context in contexts)
             {
-                var contract = new Contract
+                var contract = new Contract(context.Id)
                 {
-                    Id = context.Id,
                     LifeSpan = context.Registration.ScopedTo,
                     ServiceKeys = context.Keys,
                     CreateInstance = context.Registration.CreateInstance,

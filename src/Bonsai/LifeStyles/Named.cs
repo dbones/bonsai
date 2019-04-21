@@ -11,7 +11,7 @@
         public object Resolve(IAdvancedScope  currentScope, Contract contract, Contract parentContract)
         {
             var scope = GetNamedScope(currentScope, Name);
-            var entry = scope.InstanceCache.Get(contract.Id);
+            var entry = scope.InstanceCache.Get(contract);
 
             if (entry != null) return entry.Value;
             
@@ -21,7 +21,7 @@
                 Contract = contract
             };
 
-            scope.InstanceCache.Add(contract.Id, entry);
+            scope.InstanceCache.Add(contract, entry);
             scope.TrackInstance(entry);
 
             return entry.Value;
