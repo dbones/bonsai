@@ -4,7 +4,7 @@
 [![Nuget](https://img.shields.io/nuget/v/Bonsai.Ioc.svg)](https://www.nuget.org/packages/Bonsai.Ioc/)  [![Build status](https://ci.appveyor.com/api/projects/status/wjj6iy88fdsl1sy7/branch/master?svg=true)](https://ci.appveyor.com/project/dbones/bonsai/branch/master) [![codecov](https://codecov.io/gh/dbones/bonsai/branch/master/graph/badge.svg)](https://codecov.io/gh/dbones/bonsai) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fc52ced9d453411283c76179e1eb491a)](https://www.codacy.com/app/dbones/bonsai?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dbones/bonsai&amp;utm_campaign=Badge_Grade)
 
 
-A small .NET IoC container, written in .NET Core 2.1.
+A small .NET IoC container, written in .NET Standard 2.
 
 Currently a work in progress. ( brand new :) )
 
@@ -93,3 +93,4 @@ Things we have tired or have yet to try:
 * track only disposables - done
 * replace Concurancy with Out of the box concurancy collection
 * look into interlock instead of the lightweigh read write lock
+* look into direct IL
