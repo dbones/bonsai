@@ -1,7 +1,5 @@
 namespace Bonsai
 {
-    using System.Security.Cryptography.X509Certificates;
-    using Collections;
     using Collections.Caching;
     using Contracts;
     using Internal;

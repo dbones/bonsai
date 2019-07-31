@@ -2,7 +2,6 @@ namespace Bonsai.Collections.LinkedLists
 {
     using System.Collections.Generic;
 
-
     public class LinkedList<T> : ILinkedList<T>
     {
         private Node<T> _firstNode;
@@ -15,7 +14,7 @@ namespace Bonsai.Collections.LinkedLists
                 Value = item
             };
         }
-        
+
 
         public virtual IEnumerable<T> GetAll()
         {
@@ -25,6 +24,6 @@ namespace Bonsai.Collections.LinkedLists
                 yield return node.Value;
                 node = node.Next;
             }
-        }   
+        }
     }
 }

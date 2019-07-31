@@ -2,9 +2,7 @@ namespace Bonsai.Contracts
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.Design;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using Exceptions;
     using ImTools;
     using Internal;
@@ -14,8 +12,8 @@ namespace Bonsai.Contracts
     /// </summary>
     public class ContractRegistry
     {
-        private  ImHashMap<ServiceKey, Contract> _contracts;
-        private  ImHashMap<Type, List<Contract>> _contractsByType;
+        private ImHashMap<ServiceKey, Contract> _contracts;
+        private ImHashMap<Type, List<Contract>> _contractsByType;
         private volatile int _counter = 0;
 
         public ContractRegistry(IEnumerable<Contract> contracts)
@@ -27,7 +25,7 @@ namespace Bonsai.Contracts
                 AddContract(contract);
             }
         }
-        
+
         public void AddContract(Contract contract)
         {
             foreach (var key in contract.ServiceKeys)
@@ -68,8 +66,8 @@ namespace Bonsai.Contracts
 
         public IEnumerable<Contract> GetAllContracts(Type type)
         {
-            return _contractsByType.TryFind(type,  out var result) 
-                ? result 
+            return _contractsByType.TryFind(type, out var result)
+                ? result
                 : Enumerable.Empty<Contract>();
         }
 

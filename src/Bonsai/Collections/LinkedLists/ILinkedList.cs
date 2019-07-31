@@ -4,7 +4,6 @@ namespace Bonsai.Collections.LinkedLists
 
     public interface ILinkedList<T>
     {
-        
         void Add(T item);
         IEnumerable<T> GetAll();
     }

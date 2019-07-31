@@ -5,6 +5,7 @@ namespace Bonsai.Benchmarks
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Mathematics;
     using FastExpressionCompiler;
+    using Models;
 
     [InvocationCount(10000, 100)]
     [RankColumn(NumeralSystem.Stars)]

@@ -1,6 +1,7 @@
 ﻿namespace Bonsai.TestApp
 {
     using System;
+    using Contracts;
     using LifeStyles;
     using Registry;
     using Tests.TestModels.DataStore;
@@ -16,10 +17,50 @@
             builder.SetupModules(new BonsaiModule());
 
             using (var container = builder.Create())
+            {
+                SomeTestCode(container);
+            }
+            
+            Console.WriteLine("done");
+        }
+
+        private static void Ctor(IContainer container)
+        {
+            var repoContract = new Contract(1);
+            var logContract = new Contract(2);
+            
+            using (var scope = (IAdvancedScope)container.CreateScope())
+            {
+                
+                var d = new Service((Repository<User>)scope.Resolve(repoContract), (Logger)scope.Resolve(logContract));
+                
+            }
+        }
+
+        private static void SomeTestCode(IContainer container)
+        {
             using (var scope = container.CreateScope())
             {
                 var service = scope.Resolve<Service>();
-                
+                service.Transfer(13.34m, "A", "B");
+            }
+
+            for (int i = 0; i < 100; i++)
+            {
+                using (var scope = container.CreateScope())
+                {
+                    var service = scope.Resolve<Service>();
+                    service.Transfer(13.34m, "A", "B");
+
+
+                    for (int j = 0; j < 100; j++)
+                    {
+                        using (var scope2 = scope.CreateScope())
+                        {
+                            var service2 = scope2.Resolve<Service>();
+                        }
+                    }
+                }
             }
         }
     }
@@ -60,7 +101,10 @@
     
     public class Logger
     {
-        
+        public void Write(string message)
+        {
+            Console.WriteLine(message);
+        }
     }
     
     
@@ -85,6 +129,11 @@
         {
             User = user;
             Logger = logger;
+        }
+
+        public void Transfer(decimal amount, string source, string destination)
+        {
+            Logger.Write($"transfer {amount}. {source} => {destination}");
         }
     }
 

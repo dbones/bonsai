@@ -1,18 +1,15 @@
 ﻿namespace Bonsai
 {
     using System;
-    using System.Collections.Generic;
-    using Collections;
     using Collections.Caching;
     using Collections.LinkedLists;
     using Contracts;
     using Internal;
-
+    using Exceptions;
 
     public class Scope : IAdvancedScope
     {
         private readonly ILinkedList<Instance> _tracked;
-
 
         public Scope(
             ContractRegistry contractRegistry,
@@ -25,7 +22,7 @@
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
             InstanceCache = cachingCollection ?? new SimpleCache<Contract, Instance>(5);
-            _tracked = trackingCollection ?? new Collections.LinkedLists.LinkedList<Instance>();
+            _tracked = trackingCollection ?? new LinkedList<Instance>();
 
             InstanceCache.Add(Contracts.ScopeContract, new Instance { Value = this, Contract = Contracts.ScopeContract });
         }
@@ -48,12 +45,19 @@
         public object Resolve(ServiceKey serviceKey)
         {
             var contract = Contracts.GetContract(serviceKey);
-            return contract.LifeSpan.Resolve(this, contract);
+            return Resolve(contract);
         }
 
         public object Resolve(Contract contract, Contract parentContract = null)
         {
-            return contract.LifeSpan.Resolve(this, contract, parentContract);
+            try
+            {
+                return contract.LifeSpan.Resolve(this, contract, parentContract);
+            }
+            catch (Exception e)
+            {
+                throw new CannotResolveException(contract, e);
+            }
         }
 
         public TService Resolve<TService>(string serviceName = "default")
@@ -81,4 +85,6 @@
             return new Scope(Contracts, this, name);
         }
     }
+
+
 }

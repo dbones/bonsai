@@ -2,7 +2,6 @@ namespace Bonsai.Internal
 {
     using System;
     using System.Collections.Generic;
-    using Contracts;
     using LifeStyles;
     using Registry;
     using Types;
@@ -18,9 +17,9 @@ namespace Bonsai.Internal
                 .Scoped<Transient>();
 
             builder.Register(typeof(LazyService<>)).As(typeof(Lazy<>))
-                .DependsOn(x => x.Constructor().ParameterWithType<Contract>(), 
-                    (scope, contract, parentContract) => contract)
+                //.DependsOn(x => x.Constructor().ParameterWithType<Contract>(), (_, c, contract) => contract.ServiceKeys.First().Service.GetGenericArguments()[0])
                 .Scoped<Transient>();
+            
         }
     }
     

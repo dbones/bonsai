@@ -6,8 +6,6 @@ namespace Bonsai.Collections.Caching
     {
         private ImHashMap<TKey, TValue> _innerCache = ImHashMap<TKey, TValue>.Empty;
 
-        public int Count { get; }
-
         public TValue Get(TKey key)
         {
             return _innerCache.TryFind(key, out var v) 

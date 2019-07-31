@@ -1,14 +1,14 @@
-using Bonsai.Tests.TestModels.DataStore;
+using Bonsai.LifeStyles;
+using Bonsai.Registry;
+using Bonsai.Tests.TestModels;
+using Bonsai.Tests.TestModels.Logger;
+using Machine.Specifications;
+using PowerAssert;
 
 namespace Bonsai.Tests.Resolving
 {
-    using Machine.Specifications;
-    using PowerAssert;
-    using Registry;
-    using TestModels;
-
     [Subject("Container")]
-    public class When_resolving_a_unscannable_generic_type
+    public class When_resolving_a_complex_service 
     {
         Establish context = () => {
             var builder = new ContainerBuilder();
@@ -18,21 +18,21 @@ namespace Bonsai.Tests.Resolving
             _subject = container.CreateScope();
         };
 
-        Because of = () => _service = _subject.Resolve<IDataStore<User>>();
+        Because of = () => _service = _subject.Resolve<ILogger>();
 
         It should_provide_an_instance = () => PAssert.IsTrue(() => _service != null);
         It should_provide_an_instance_which_is_associated_with_the_registration = 
-            () => PAssert.IsTrue(() => _service is DataStorePlain<User>);
+            () => PAssert.IsTrue(() => _service is LoggerWithDisposable);
         
         static IScope _subject;
-        static IDataStore<User> _service;
+        static ILogger _service;
         
         class RegisterContracts : IModule
         {
             public void Setup(ContainerBuilder builder)
             {
-                //TODO figure out the the syntax 
-                builder.Register(typeof(DataStorePlain<>)).As(typeof(IDataStore<>));
+                builder.Register<LoggerWithDisposable>().As<ILogger>().Scoped<Transient>();
+                builder.Register<ClassMonitor>().As<ClassMonitor>().UsingInstance(new ClassMonitor());
             }
         }
     }

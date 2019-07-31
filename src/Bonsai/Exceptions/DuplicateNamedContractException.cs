@@ -1,7 +1,6 @@
 namespace Bonsai.Exceptions
 {
     using System;
-    using System.Reflection;
 
     public class DuplicateNamedContractException : Exception
     {

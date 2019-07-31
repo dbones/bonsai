@@ -2,9 +2,7 @@
 {
     using System;
     using System.Linq.Expressions;
-    using System.Runtime.CompilerServices;
     using Contracts;
-    using Internal;
     using Registry;
 
     public static class ContainerBuilderExtensions
@@ -54,15 +52,15 @@
             registration.CreateInstance = ctor.Compile(); 
             return new FluentBuilder(registration, serviceType);
         }
-        
-//        public static FluentBuilder Register(this ContainerBuilder builder, Type serviceType, Expression<Func<IScope, Contract, object>> ctor)
-//        {
-//            var compiled = ctor.Compile();
-//            
-//            var registration = new Registration();
-//            builder.RegisterContract(registration);
-//            registration.CreateInstance = (scope, contract, parentContract) => compiled(scope, contract); 
-//            return new FluentBuilder(registration, serviceType);
-//        }
+
+        //public static FluentBuilder Register(this ContainerBuilder builder, Type serviceType, Expression<Func<IScope, Contract, object>> ctor)
+        //{
+        //    var compiled = ctor.Compile();
+
+        //    var registration = new Registration();
+        //    builder.RegisterContract(registration);
+        //    registration.CreateInstance = (scope, contract, parentContract) => compiled(scope, contract);
+        //    return new FluentBuilder(registration, serviceType);
+        //}
     }
 }

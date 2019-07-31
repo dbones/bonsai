@@ -1,4 +1,4 @@
-namespace Bonsai.Benchmarks
+namespace Bonsai.Benchmarks.Models
 {
     public class User
     {

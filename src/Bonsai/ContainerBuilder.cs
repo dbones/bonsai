@@ -1,12 +1,12 @@
 ﻿namespace Bonsai
 {
     using System.Collections.Generic;
-    using Collections;
     using Collections.Caching;
     using Collections.LinkedLists;
     using Contracts;
     using Internal;
     using PreContainer;
+    using PreContainer.RegistrationProcesing;
     using Registry;
 
     /// <summary>

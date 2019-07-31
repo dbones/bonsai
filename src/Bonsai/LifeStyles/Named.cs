@@ -6,15 +6,15 @@
 
     public class Named : ILifeSpan
     {
-        public string Name { private get; set; }        
+        public string Name { private get; set; }
 
-        public object Resolve(IAdvancedScope  currentScope, Contract contract, Contract parentContract)
+        public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
             var scope = GetNamedScope(currentScope, Name);
             var entry = scope.InstanceCache.Get(contract);
 
             if (entry != null) return entry.Value;
-            
+
             entry = new Instance
             {
                 Value = contract.CreateInstance(currentScope, contract, parentContract),
@@ -27,7 +27,7 @@
             return entry.Value;
         }
 
-        IAdvancedScope  GetNamedScope(IAdvancedScope  scope, string name)
+        IAdvancedScope GetNamedScope(IAdvancedScope scope, string name)
         {
             if (scope.Name == name)
             {

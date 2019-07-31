@@ -6,6 +6,7 @@ namespace Bonsai.Benchmarks
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Windsor;
     using LifeStyles;
+    using Models;
     using Registry;
     using ContainerBuilder = Bonsai.ContainerBuilder;
 

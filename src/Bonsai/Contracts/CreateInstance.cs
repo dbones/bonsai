@@ -1,7 +1,5 @@
 namespace Bonsai.Contracts
 {
-    using Internal;
-
     /// <summary>
     /// a delegate which is responsible for creating an instance of an object
     /// </summary>

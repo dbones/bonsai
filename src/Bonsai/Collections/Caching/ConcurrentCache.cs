@@ -17,8 +17,6 @@ namespace Bonsai.Collections.Caching
         {
             _innerCache = new Dictionary<TKey,TValue>();
         }
-        
-        public int Count => _innerCache.Count;
 
         public TValue Get(TKey key)
         {

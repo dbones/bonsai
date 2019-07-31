@@ -18,7 +18,7 @@ namespace Bonsai.Collections.LinkedLists
             }
             finally
             {
-                _lock.ExitWriteLock();                
+                _lock.ExitWriteLock();
             }
         }
 
@@ -33,7 +33,7 @@ namespace Bonsai.Collections.LinkedLists
             {
                 _lock.ExitReadLock();
             }
-            
+
         }
     }
 }

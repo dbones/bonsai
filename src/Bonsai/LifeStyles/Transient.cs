@@ -9,16 +9,15 @@
         {
             var value = contract.CreateInstance(currentScope, contract, parentContract);
 
-            if (contract.IsDisposal)
-            {
-                var instance = new Instance
-                {
-                    Value = value,
-                    Contract = contract
-                };
-                currentScope.TrackInstance(instance);
-            }
+            if (!contract.IsDisposal) return value;
 
+            var instance = new Instance
+            {
+                Value = value,
+                Contract = contract
+            };
+
+            currentScope.TrackInstance(instance);
             return value;
         }
     }

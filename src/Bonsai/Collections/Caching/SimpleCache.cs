@@ -6,7 +6,6 @@ namespace Bonsai.Collections.Caching
     {
         private readonly Dictionary<TKey, TValue> _innerCache;
 
-
         public SimpleCache(int capacity)
         {
             _innerCache = new Dictionary<TKey, TValue>(capacity);
@@ -17,7 +16,6 @@ namespace Bonsai.Collections.Caching
             _innerCache = new Dictionary<TKey, TValue>();
         }
         
-        public int Count { get; }
         public TValue Get(TKey key)
         {
             return _innerCache.TryGetValue(key, out var v) 

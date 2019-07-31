@@ -1,7 +1,6 @@
 ﻿namespace Bonsai.LifeStyles
 {
     using Contracts;
-    using Internal;
 
     public interface ILifeSpan
     {
