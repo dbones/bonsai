@@ -6,7 +6,8 @@ namespace Bonsai.Contracts
     using Exceptions;
     using ImTools;
     using Internal;
-    using PreContainer.RegistrationProcessing;
+    using Planning;
+    using Planning.RegistrationProcessing;
 
     /// <summary>
     /// the collection of contracts, with some methods to find a contact

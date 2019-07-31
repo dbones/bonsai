@@ -1,13 +1,12 @@
 ﻿namespace Bonsai
 {
     using System.Collections.Generic;
-    using System.Linq;
     using Collections.Caching;
     using Collections.LinkedLists;
     using Contracts;
     using Internal;
-    using PreContainer;
-    using PreContainer.RegistrationProcessing;
+    using Planning;
+    using Planning.RegistrationProcessing;
     using Registry;
 
     /// <summary>
@@ -69,68 +68,6 @@
         public void RegisterContract(Registration registration)
         {
             _registrations.Add(registration);
-        }
-    }
-
-
-    public class DependencySetupStrategy
-    {
-        RegistrationScanner registrationScanner;
-        DelegateBuilder deletBuilder = new DelegateBuilder();
-        ContractRegistry contractRegistry;
-
-
-        public DependencySetupStrategy(RegistrationRegistry registrationRegistry)
-        {
-            registrationScanner = new RegistrationScanner(registrationRegistry);
-        }
-
-
-        public IEnumerable<Contract> HandleInitialSetup()
-        {
-            var contexts = registrationScanner.CreateContexts().ToList();
-            var contracts = CreateContracts(contexts);
-
-            foreach (var contract in contracts)
-            {
-                deletBuilder.SetDelegates(contexts, contracts, contract);
-            }
-
-            return contracts;
-        }
-
-
-        public IEnumerable<Contract> HandleContractSetup(ServiceKey key, IEnumerable<Contract> allContracts)
-        {
-            var contexts = registrationScanner.CreateContexts(key).ToList();
-            var contracts = CreateContracts(contexts);
-
-            foreach (var contract in contracts)
-            {
-                deletBuilder.SetDelegates(registrationScanner.RegistrationContexts, contracts.Union(allContracts).ToList(), contract);
-            }
-
-            return contracts;
-        }
-
-
-        private ICollection<Contract> CreateContracts(IEnumerable<RegistrationContext> contexts)
-        {
-            var contracts = new List<Contract>();
-            foreach (var context in contexts)
-            {
-                var contract = new Contract(context.Id)
-                {
-                    LifeSpan = context.Registration.ScopedTo,
-                    ServiceKeys = context.Keys,
-                    CreateInstance = context.Registration.CreateInstance,
-                    Instance = context.Registration.Instance
-                };
-
-                contracts.Add(contract);
-            }
-
-            return contracts;
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace Bonsai.PreContainer.RegistrationProcessing
+namespace Bonsai.Planning.RegistrationProcessing
 {
     using System;
     using System.Collections.Generic;
@@ -39,6 +39,11 @@ namespace Bonsai.PreContainer.RegistrationProcessing
         {
             var registration = _registrations.BySupportingType(key);
             var results = new List<RegistrationContext>();
+
+            if (registration == null)
+            {
+                return Enumerable.Empty<RegistrationContext>();
+            }
             
             GetRegistrationContext(registration, results, key.Service);
             return results;

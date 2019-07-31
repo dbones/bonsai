@@ -5,7 +5,7 @@ namespace Bonsai.Contracts
     using System.Linq;
     using Internal;
     using LifeStyles;
-    using PreContainer;
+    using Planning;
 
     /// <summary>
     /// this contains all the information for every concrete instance which can be resolved from the container.

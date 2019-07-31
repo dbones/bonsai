@@ -1,7 +1,6 @@
 ﻿namespace Bonsai
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// this is a scope, of which you can resolve objects at.
@@ -25,18 +24,4 @@
         TService Resolve<TService>(string serviceName = "default");
 
     }
-
-
-    public static class ScopeExtensions
-    {
-        /// <summary>
-        /// resolves the service into all instances of the target type
-        /// </summary>
-        /// <typeparam name="TService">the required service</typeparam>
-        /// <returns>instance of the service</returns>
-        public static IEnumerable<TService> ResolveAll<TService>(this IScope scope)
-        {
-            return scope.Resolve<IEnumerable<TService>>();
-        }
-    }  
 }

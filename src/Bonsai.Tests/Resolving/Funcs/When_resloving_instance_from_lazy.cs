@@ -7,6 +7,7 @@ namespace Bonsai.Tests.Resolving.Funcs
     using TestModels.Logger;
     using TestModels.Service1;
 
+    [Ignore("wip")]
     [Subject("Container")]
     public class When_resloving_instance_from_func 
     {

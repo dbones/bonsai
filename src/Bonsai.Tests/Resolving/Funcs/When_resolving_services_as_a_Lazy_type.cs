@@ -7,6 +7,7 @@ namespace Bonsai.Tests.Resolving.Funcs
     using TestModels.Logger;
     using TestModels.Service1;
 
+    [Ignore("wip")]
     [Subject("Container")]
     public class When_resolving_services_as_a_Func_type 
     {

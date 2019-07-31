@@ -1,4 +1,4 @@
-namespace Bonsai.PreContainer
+namespace Bonsai.Planning
 {
     using System.Linq;
     using System.Reflection;
