@@ -1,4 +1,4 @@
-namespace Bonsai.PreContainer.RegistrationProcesing
+namespace Bonsai.PreContainer.RegistrationProcessing
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-namespace Bonsai.PreContainer.RegistrationProcesing
+namespace Bonsai.PreContainer.RegistrationProcessing
 {
     using System;
     using System.Collections.Generic;
@@ -10,31 +10,43 @@ namespace Bonsai.PreContainer.RegistrationProcesing
     public class RegistrationScanner
     {
         private readonly RegistrationRegistry _registrations;
-        private int counter = 0;
+        private int _counter = 0;
 
-        private readonly Dictionary<string, RegistrationContext> _contexts =
-            new Dictionary<string, RegistrationContext>();
+        private readonly HashSet<string> _processedContextHashes = new HashSet<string>();
+        public ICollection<RegistrationContext> RegistrationContexts { get; set; }
 
         public RegistrationScanner(RegistrationRegistry registrations)
         {
             _registrations = registrations;
+            RegistrationContexts = new List<RegistrationContext>();
         }
 
-        public IEnumerable<RegistrationContext> Scan()
+        public ICollection<RegistrationContext> CreateContexts()
         {
+            var results = new List<RegistrationContext>();
+
             foreach (var registration in _registrations
                 .Where(x => !x.ImplementedType.IsGenericTypeDefinition)
                 )
             {
-                GetServiceKeys(registration);
+                GetRegistrationContext(registration, results);
             }
 
-            return _contexts.Values;
+            return results;
         }
 
+        public IEnumerable<RegistrationContext> CreateContexts(ServiceKey key)
+        {
+            var registration = _registrations.BySupportingType(key);
+            var results = new List<RegistrationContext>();
+            
+            GetRegistrationContext(registration, results, key.Service);
+            return results;
+        }
 
-        private void GetServiceKeys(
+        private void GetRegistrationContext(
             Registration registration,
+            List<RegistrationContext> foundContexts,
             Type registrationType = null)
         {
             Code.Require(() => registration != null, nameof(registration));
@@ -45,16 +57,18 @@ namespace Bonsai.PreContainer.RegistrationProcesing
                 : $"{registration.Id} {registration.ImplementedType.FullName}";
 
             //already processed
-            var haveRegistration = _contexts.ContainsKey(hash);
+            var haveRegistration = _processedContextHashes.Contains(hash);
             if (haveRegistration)
             {
                 return;
             }
 
-            counter++;
-            RegistrationContext context = new RegistrationContext(counter);
+            _counter++;
+            RegistrationContext context = new RegistrationContext(_counter);
             context.Registration = registration;
-            _contexts.Add(hash, context);
+            _processedContextHashes.Add(hash);
+            foundContexts.Add(context);
+            RegistrationContexts.Add(context);
             
             //object provided or delegate provided
             if (registration.Instance != null || registration.CreateInstance != null)
@@ -162,7 +176,7 @@ namespace Bonsai.PreContainer.RegistrationProcesing
 
                 //recurive search
                 var dependencyRegistration = _registrations.BySupportingType(dependencyKey);
-                GetServiceKeys(dependencyRegistration, type);
+                GetRegistrationContext(dependencyRegistration, foundContexts, type);
             }
         }
     }

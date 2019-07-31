@@ -17,17 +17,17 @@ namespace Bonsai.Contracts
         {
             _hash = id;
         }
-        
-        
-        /// <summary>
-        /// a delegate which will create an instance
-        /// </summary>
-        public CreateInstance CreateInstance { get; set; }
+
 
         /// <summary>
         /// all the services this contract will support
         /// </summary>
         public HashSet<ServiceKey> ServiceKeys { get; set; }
+
+        /// <summary>
+        /// a delegate which will create an instance
+        /// </summary>
+        public CreateInstance CreateInstance { get; set; }
 
         /// <summary>
         /// a delegate which will can dispose of the instance

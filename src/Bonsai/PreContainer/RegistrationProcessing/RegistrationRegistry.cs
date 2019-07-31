@@ -1,4 +1,4 @@
-namespace Bonsai.PreContainer.RegistrationProcesing
+namespace Bonsai.PreContainer.RegistrationProcessing
 {
     using System.Collections;
     using System.Collections.Generic;
@@ -54,6 +54,7 @@ namespace Bonsai.PreContainer.RegistrationProcesing
                 }
 
                 return x.Types.Any(possibleType =>
+                    possibleType.ServiceName == exposedType.ServiceName &&
                     possibleType.Service.IsGenericType &&
                     possibleType.Service.GetGenericTypeDefinition() == exposedType.Service.GetGenericTypeDefinition());
             });

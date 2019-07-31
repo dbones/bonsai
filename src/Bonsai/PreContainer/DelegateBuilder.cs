@@ -2,55 +2,60 @@ namespace Bonsai.PreContainer
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.Design;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
     using Contracts;
     using Exceptions;
     using FastExpressionCompiler;
-    using RegistrationProcesing;
+    using RegistrationProcessing;
     using Registry;
+
+
+
+    public class ContractBuilder
+    {
+
+    }
+
+
 
     public class DelegateBuilder
     {
         public List<IConstruct> _constructs = new List<IConstruct>() { new FuncConstruct() };
-        
-        public IEnumerable<Contract> Create(IEnumerable<RegistrationContext> contexts)
+
+        public void SetDelegates(ICollection<RegistrationContext> contexts, ICollection<Contract> contracts, Contract contract)
         {
-            contexts = contexts.ToList();
-            var contracts = new List<Contract>();
-            foreach (var context in contexts)
+            var context = contexts.First(x => x.Id == contract.Id);
+
+            if (context.Registration.Instance != null)
             {
-                var contract = new Contract(context.Id)
-                {
-                    LifeSpan = context.Registration.ScopedTo,
-                    ServiceKeys = context.Keys,
-                    CreateInstance = context.Registration.CreateInstance,
-                    Instance = context.Registration.Instance
-                };
-
-                if (typeof(IDisposable).IsAssignableFrom(context.ImplementedType))
-                {
-                    contract.IsDisposal = true;
-                    contract.DisposeInstance = Disposal;
-                }
-                else
-                {
-                    contract.IsDisposal = false;
-                    contract.DisposeInstance = NoOpDisposal;
-                }
-
-                contracts.Add(contract);
+                //provided instance
+                //do nothing
+            }
+            else if (context.Registration.CreateInstance != null)
+            {
+                //provided a ctor
+                contract.CreateInstance = context.Registration.CreateInstance;
+            }
+            else
+            {
+                //need to create a delegate
+                contract.CreateInstance = _constructs.First(x => x.CanSupport(context)).Create(context, contracts);
             }
 
 
-            foreach (var context in contexts)
+            if (typeof(IDisposable).IsAssignableFrom(context.ImplementedType))
             {
-                var contract = contracts.First(x => x.Id == context.Id);
-                contract.CreateInstance = _constructs.First(x=> x.CanSupport(context)).Create(context, contracts);
+                contract.IsDisposal = true;
+                contract.DisposeInstance = Disposal;
             }
-
-            return contracts;
+            else
+            {
+                contract.IsDisposal = false;
+                contract.DisposeInstance = NoOpDisposal;
+            }
         }
 
         /// <summary>
@@ -68,9 +73,9 @@ namespace Bonsai.PreContainer
         /// <param name="instance">the instance which this method will execute against</param>
         private static void Disposal(object instance)
         {
-            ((IDisposable) instance).Dispose();
+            ((IDisposable)instance).Dispose();
         }
-        
+
     }
 
     public interface IConstruct
@@ -88,8 +93,6 @@ namespace Bonsai.PreContainer
 
         public CreateInstance Create(RegistrationContext context, IEnumerable<Contract> contracts)
         {
-            if (context.Registration.Instance != null) return null;
-            if (context.Registration.CreateInstance != null) return context.Registration.CreateInstance;
             contracts = contracts.ToList();
 
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
@@ -104,7 +107,7 @@ namespace Bonsai.PreContainer
             var unAssignedContractParam = Expression.Parameter(typeof(Contract));
             var nullExpression = Expression.Constant(null);
             var nullContractExpression = Expression.Convert(nullExpression, typeof(Contract));
-            
+
             foreach (var param in parameters)
             {
                 var p = param;
@@ -127,13 +130,13 @@ namespace Bonsai.PreContainer
                         nullContractExpression,
                         parentContractParam);
                     var con = Expression.Convert(suppliedDelegate, p.ProvidedType);
-                
+
                     createParams.Add(con);
                     continue;
                 }
 
                 Contract contract;
-                
+
                 try
                 {
                     contract = contracts.First(x => x.ServiceKeys.Contains(p.ServiceKey));
@@ -142,13 +145,13 @@ namespace Bonsai.PreContainer
                 {
                     throw new MissingContractException(p.ServiceKey);
                 }
-                
+
                 var resolve = typeof(IAdvancedScope).GetMethod("Resolve", new[]
                 {
                     typeof(Contract),
                     typeof(Contract)
                 });
-                
+
                 Expression constantExpr = Expression.Constant(contract);
                 MethodCallExpression resolveParam = Expression.Call(
                     scopeParam,
@@ -157,17 +160,17 @@ namespace Bonsai.PreContainer
                     parentContractParam
                 );
 
-                var convert = Expression.Convert(resolveParam, p.ServiceKey.Service);                
+                var convert = Expression.Convert(resolveParam, p.ServiceKey.Service);
                 createParams.Add(convert);
             }
-            
-            var method = (ConstructorInfo) ctor.Method;
+
+            var method = (ConstructorInfo)ctor.Method;
             var newExpression =
                 Expression.New(method, createParams);
-            
+
             var compiledCtor = Expression.Lambda<CreateInstance>(
-                newExpression, 
-                scopeParam, 
+                newExpression,
+                scopeParam,
                 parentContractParam,
                 unAssignedContractParam)
                 .CompileFast();
@@ -175,8 +178,8 @@ namespace Bonsai.PreContainer
             //object ParameterLessCtor(IAdvancedScope scope, Contract ct, Contract pct) => compiledCtor(scope, ct);
             return compiledCtor;
         }
-    } 
-    
+    }
+
     /*
     public class IlConstruct : IConstruct
     {

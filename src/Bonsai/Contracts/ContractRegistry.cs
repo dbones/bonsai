@@ -6,6 +6,7 @@ namespace Bonsai.Contracts
     using Exceptions;
     using ImTools;
     using Internal;
+    using PreContainer.RegistrationProcessing;
 
     /// <summary>
     /// the collection of contracts, with some methods to find a contact
@@ -15,11 +16,15 @@ namespace Bonsai.Contracts
         private ImHashMap<ServiceKey, Contract> _contracts;
         private ImHashMap<Type, List<Contract>> _contractsByType;
         private volatile int _counter = 0;
+        private DependencySetupStrategy _dependencySetupStrategy;
 
-        public ContractRegistry(IEnumerable<Contract> contracts)
-        {
+        public ContractRegistry(RegistrationRegistry registrationRegistry)
+        { 
+            _dependencySetupStrategy = new DependencySetupStrategy(registrationRegistry);
             _contractsByType = ImHashMap<Type, List<Contract>>.Empty;
             _contracts = ImHashMap<ServiceKey, Contract>.Empty;
+
+            var contracts = _dependencySetupStrategy.HandleInitialSetup();
             foreach (var contract in contracts)
             {
                 AddContract(contract);
@@ -64,6 +69,8 @@ namespace Bonsai.Contracts
 
         public Contract ScopeContract { get; private set; }
 
+        internal IEnumerable<Contract> AllContracts => _contracts.Enumerate().Select(x=> x.Value);
+
         public IEnumerable<Contract> GetAllContracts(Type type)
         {
             return _contractsByType.TryFind(type, out var result)
@@ -80,6 +87,17 @@ namespace Bonsai.Contracts
         public Contract GetContract(ServiceKey serviceKey)
         {
             if (_contracts.TryFind(serviceKey, out var entry))
+            {
+                return entry;
+            }
+
+            var contracts = _dependencySetupStrategy.HandleContractSetup(serviceKey, AllContracts);
+            foreach (var contract in contracts)
+            {
+                AddContract(contract);
+            }
+
+            if (_contracts.TryFind(serviceKey, out entry))
             {
                 return entry;
             }

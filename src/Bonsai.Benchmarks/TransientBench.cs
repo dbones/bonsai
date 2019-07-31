@@ -7,6 +7,7 @@ namespace Bonsai.Benchmarks
     using Castle.Windsor;
     using Grace.DependencyInjection;
     using LifeStyles;
+    using Models;
     using Registry;
     using ContainerBuilder = Bonsai.ContainerBuilder;
 

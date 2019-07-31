@@ -4,7 +4,7 @@ namespace Bonsai.PreContainer
     using System.Reflection;
     using Exceptions;
     using Internal;
-    using RegistrationProcesing;
+    using RegistrationProcessing;
     using Registry;
 
     public class InjectionPlanner
