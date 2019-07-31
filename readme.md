@@ -56,6 +56,13 @@ using(var scope = container.CreateScope())
 }
 ```
 
+## Internal design
+
+Initially Bonsai was designed with the ability to pre-compile all delegates including all generic types. 
+
+However some libraries make use of the IoC container directly inside factory classes. this lead to the Planning namespace, which we want to refactor.
+
+
 ## Performance - this is still a work in progress.
 
 for example here is how Bonsai stacks up against some other IoC containers
@@ -66,20 +73,20 @@ Note: that all the **other** IoC **provide** far **more** features, at the momen
 
 BenchmarkDotNet=v0.11.3, OS=Windows 10.0.17134.706 (1803/April2018Update/Redstone4)
 Intel Core i7-8550U CPU 1.80GHz (Kaby Lake R), 1 CPU, 8 logical and 4 physical cores
-Frequency=1945313 Hz, Resolution=514.0561 ns, Timer=TSC
+Frequency=1945310 Hz, Resolution=514.0569 ns, Timer=TSC
 .NET Core SDK=2.1.403
   [Host]     : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
-  Job-DPRFHW : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
+  Job-NMUDBD : .NET Core 2.1.5 (CoreCLR 4.6.26919.02, CoreFX 4.6.26919.02), 64bit RyuJIT
 
 InvocationCount=5000  UnrollFactor=50  
 
 ```
-|  Method |        Mean |      Error |    StdDev | Ratio | RatioSD | Rank | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
-|-------- |------------:|-----------:|----------:|------:|--------:|-----:|------------:|------------:|------------:|--------------------:|
-|  Bonsai |   150.89 ns |   7.974 ns |  22.49 ns |  1.00 |    0.00 |   ** |           - |           - |           - |               272 B |
-| Windsor | 9,313.65 ns | 186.202 ns | 427.83 ns | 63.38 |    8.87 | **** |      1.0000 |           - |           - |              4344 B |
-| Autofac | 2,014.56 ns |  53.931 ns | 158.17 ns | 13.63 |    2.14 |  *** |      0.4000 |           - |           - |              2344 B |
-|   Grace |    51.81 ns |   4.407 ns |  12.79 ns |  0.35 |    0.10 |    * |           - |           - |           - |               104 B |
+|  Method |         Mean |      Error |      StdDev |       Median | Ratio | RatioSD | Rank | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
+|-------- |-------------:|-----------:|------------:|-------------:|------:|--------:|-----:|------------:|------------:|------------:|--------------------:|
+|  Bonsai |    117.33 ns |   9.945 ns |    28.69 ns |    107.66 ns |  1.00 |    0.00 |   ** |           - |           - |           - |               144 B |
+| Windsor | 10,582.30 ns | 397.848 ns | 1,166.82 ns | 10,333.75 ns | 95.36 |   22.75 | **** |      1.0000 |           - |           - |              4344 B |
+| Autofac |  2,917.91 ns | 255.063 ns |   748.06 ns |  2,717.46 ns | 26.07 |    8.51 |  *** |      0.4000 |           - |           - |              2344 B |
+|   Grace |     50.66 ns |   3.690 ns |    10.59 ns |     48.50 ns |  0.46 |    0.15 |    * |           - |           - |           - |               104 B |
 
 
 
