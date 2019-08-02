@@ -1,6 +1,5 @@
 namespace Bonsai.Planning
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
@@ -25,8 +24,7 @@ namespace Bonsai.Planning
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
             //var parentContract = contracts.First(x => x.ServiceKeys.Contains(context.Keys.First()));
 
-            List<Expression> createParams = new List<Expression>();
-
+            var createParams = new List<Expression>();
             var parameters = ctor.Parameters;
 
             var scopeParam = Expression.Parameter(typeof(IAdvancedScope));
@@ -39,7 +37,7 @@ namespace Bonsai.Planning
             {
                 var p = param;
 
-
+                //we have been provided a value in the registration
                 if (p.Value != null)
                 {
                     var provided = Expression.Constant(p.Value);
@@ -48,7 +46,7 @@ namespace Bonsai.Planning
                     continue;
                 }
 
-
+                //registration provided a delegate.
                 if (p.CreateInstance != null)
                 {
                     var provided = Expression.Constant(p.CreateInstance);
@@ -62,16 +60,9 @@ namespace Bonsai.Planning
                     continue;
                 }
 
-                Contract contract;
-
-                try
-                {
-                    contract = contracts.First(x => x.ServiceKeys.Contains(p.ServiceKey));
-                }
-                catch (Exception)
-                {
-                    throw new MissingContractException(p.ServiceKey);
-                }
+                //ok now we find the contract, so we can create a resolve expression
+                var contract = contracts.FirstOrDefault(x => x.ServiceKeys.Contains(p.ServiceKey));
+                if (contract == null) throw new MissingContractException(p.ServiceKey);
 
                 var resolve = typeof(IAdvancedScope).GetMethod("Resolve", new[]
                 {
@@ -95,12 +86,13 @@ namespace Bonsai.Planning
             var newExpression =
                 Expression.New(method, createParams);
 
-            var compiledCtor = Expression.Lambda<CreateInstance>(
+            var compiledCtor = Expression
+                .Lambda<CreateInstance>(
                     newExpression,
                     scopeParam,
                     parentContractParam,
                     unAssignedContractParam)
-                .CompileFast();
+                .CompileFast(); //this is used over Compile, as it performs a little faster
 
             //object ParameterLessCtor(IAdvancedScope scope, Contract ct, Contract pct) => compiledCtor(scope, ct);
             return compiledCtor;

@@ -21,13 +21,15 @@ namespace Bonsai.Planning.RegistrationProcessing
             RegistrationContexts = new List<RegistrationContext>();
         }
 
+        /// <summary>
+        /// this is used to find all known contracts at the start of the container build
+        /// </summary>
         public ICollection<RegistrationContext> CreateContexts()
         {
             var results = new List<RegistrationContext>();
 
             foreach (var registration in _registrations
-                .Where(x => !x.ImplementedType.IsGenericTypeDefinition)
-                )
+                .Where(x => !x.ImplementedType.IsGenericTypeDefinition))
             {
                 GetRegistrationContext(registration, results);
             }
@@ -35,6 +37,10 @@ namespace Bonsai.Planning.RegistrationProcessing
             return results;
         }
 
+        /// <summary>
+        /// this is to find new contexts for the unknown uses of generic types
+        /// where the container is not being used directly, but is being used inside a factory class
+        /// </summary>
         public IEnumerable<RegistrationContext> CreateContexts(ServiceKey key)
         {
             var registration = _registrations.BySupportingType(key);
@@ -49,6 +55,13 @@ namespace Bonsai.Planning.RegistrationProcessing
             return results;
         }
 
+
+        /// <summary>
+        /// this looks over the code base, trying to find all known generic types and types
+        /// </summary>
+        /// <remarks>
+        /// this is probably the most complex code in this codebase, we need to refactor to make cleaner
+        /// </remarks>
         private void GetRegistrationContext(
             Registration registration,
             List<RegistrationContext> foundContexts,

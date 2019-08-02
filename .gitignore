@@ -14,3 +14,5 @@ images/HIROSHT.TTF
 src/Bonsai.Tests/coverage.opencover.xml
 *.trx
 src/.vs/
+src/Bonsai.Benchmarks/BenchmarkDotNet.Artifacts.sf/Bones.Benchmarks.DelegateBench.log
+src/Bonsai.Benchmarks/BenchmarkDotNet.Artifacts.sf/

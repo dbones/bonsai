@@ -1,26 +1,20 @@
 ﻿namespace Bonsai.LifeStyles
 {
+    using System.Runtime.InteropServices.ComTypes;
     using Contracts;
-    using Internal;
 
     public class PerScope : ILifeSpan
     {
         public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
-            var entry = currentScope.InstanceCache.Get(contract);
-
-            if (entry != null) return entry.Value;
+            if (currentScope.InstanceCache.TryGet(contract, out var entry)) return entry;
             
-            entry = new Instance
-            {
-                Value = contract.CreateInstance(currentScope, contract, parentContract),
-                Contract = contract
-            };
+            entry = contract.CreateInstance(currentScope, contract, parentContract);
             
             currentScope.InstanceCache.Add(contract, entry);
-            currentScope.TrackInstance(entry);
+            currentScope.TrackInstance(contract, entry);
 
-            return entry.Value;
+            return entry;
         }
     }
 }

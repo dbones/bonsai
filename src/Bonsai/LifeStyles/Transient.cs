@@ -1,7 +1,6 @@
 ﻿namespace Bonsai.LifeStyles
 {
     using Contracts;
-    using Internal;
 
     public class Transient : ILifeSpan
     {
@@ -9,15 +8,7 @@
         {
             var value = contract.CreateInstance(currentScope, contract, parentContract);
 
-            if (!contract.IsDisposal) return value;
-
-            var instance = new Instance
-            {
-                Value = value,
-                Contract = contract
-            };
-
-            currentScope.TrackInstance(instance);
+            currentScope.TrackInstance(contract, value);
             return value;
         }
     }

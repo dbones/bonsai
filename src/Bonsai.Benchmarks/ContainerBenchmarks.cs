@@ -7,6 +7,7 @@ namespace Bonsai.Benchmarks
     using Castle.MicroKernel.Registration;
     using Castle.Windsor;
     using Grace.DependencyInjection;
+    using Microsoft.Extensions.DependencyInjection;
     using Registry;
     using ModuleRegistrationExtensions = Autofac.ModuleRegistrationExtensions;
 
@@ -21,6 +22,9 @@ namespace Bonsai.Benchmarks
         protected IWindsorContainer _windsorContainer;
         private IDisposable _windsorScope;
 
+        private ServiceProvider _msContainer;
+        protected IServiceScope _msScope;
+
         private Autofac.IContainer _autofacContainer;
         protected Autofac.ILifetimeScope _autofacScope;
 
@@ -29,8 +33,12 @@ namespace Bonsai.Benchmarks
 
         
         [GlobalSetup]
-        public void GlobalSetup()
+        public virtual void GlobalSetup()
         {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.Setup(SetupMs());
+            _msContainer = serviceCollection.BuildServiceProvider();
+
             var builder = new ContainerBuilder();
             builder.SetupModules(SetupBonsai());
             _bonesContainer= builder.Create();
@@ -50,6 +58,7 @@ namespace Bonsai.Benchmarks
         public void Setup()
         {
             _bonesScope = _bonesContainer.CreateScope();
+            _msScope = _msContainer.CreateScope();
             _windsorScope = _windsorContainer.BeginScope();
             _autofacScope = _autofacContainer.BeginLifetimeScope();
             _graceScope = _graceContainer.BeginLifetimeScope();
@@ -59,6 +68,7 @@ namespace Bonsai.Benchmarks
         public void Cleanup()
         {
             _bonesScope.Dispose();
+            _msScope.Dispose();
             _windsorScope.Dispose();
             _autofacScope.Dispose();
             _graceScope.Dispose();
@@ -68,6 +78,7 @@ namespace Bonsai.Benchmarks
         public void GlobalCleanup()
         {
             _bonesContainer.Dispose();
+            _msContainer.Dispose();
             _windsorContainer.Dispose();
             _autofacContainer.Dispose();
             _graceContainer.Dispose();
@@ -78,5 +89,23 @@ namespace Bonsai.Benchmarks
         protected abstract IWindsorInstaller SetupWindsor();
         protected abstract Autofac.Module SetupAutofac();
         protected abstract Grace.DependencyInjection.IConfigurationModule SetupGrace();
+        protected abstract IServiceCollectionModule SetupMs();
+    }
+
+
+    public interface IServiceCollectionModule
+    {
+        void Setup(IServiceCollection serviceCollection);
+    }
+
+    public static class ServiceCollectionExtensions
+    {
+        public static void Setup(this IServiceCollection collection, params IServiceCollectionModule[] modules)
+        {
+            foreach (var serviceCollectionModule in modules)
+            {
+                serviceCollectionModule.Setup(collection);
+            }
+        }
     }
 }

@@ -23,6 +23,11 @@ namespace Bonsai.Collections.Caching
                 : null;
         }
 
+        public bool TryGet(TKey key, out TValue value)
+        {
+            return _innerCache.TryGetValue(key, out value);
+        }
+
         public void Add(TKey key, TValue value)
         {
             _innerCache.Add(key, value);

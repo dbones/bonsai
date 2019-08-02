@@ -57,8 +57,8 @@
                 contractRegistry, 
                 null, 
                 "singleton",
-                new ConcurrentLinkedList<Instance>(),
-                new ConcurrentAvlCache<Contract, Instance>());
+                new ConcurrentLinkedList<object>(),
+                new ConcurrentAvlCache<Contract, object>());
         }
 
         /// <summary>

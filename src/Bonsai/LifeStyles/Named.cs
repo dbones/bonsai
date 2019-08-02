@@ -2,7 +2,6 @@
 {
     using Contracts;
     using Exceptions;
-    using Internal;
 
     public class Named : ILifeSpan
     {
@@ -11,20 +10,14 @@
         public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
             var scope = GetNamedScope(currentScope, Name);
-            var entry = scope.InstanceCache.Get(contract);
+            if (scope.InstanceCache.TryGet(contract, out var entry)) return entry;
 
-            if (entry != null) return entry.Value;
-
-            entry = new Instance
-            {
-                Value = contract.CreateInstance(currentScope, contract, parentContract),
-                Contract = contract
-            };
+            entry =  contract.CreateInstance(currentScope, contract, parentContract);
 
             scope.InstanceCache.Add(contract, entry);
-            scope.TrackInstance(entry);
+            scope.TrackInstance(contract, entry);
 
-            return entry.Value;
+            return entry;
         }
 
         IAdvancedScope GetNamedScope(IAdvancedScope scope, string name)

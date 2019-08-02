@@ -9,55 +9,47 @@
 
     public class Scope : IAdvancedScope
     {
-        private readonly ILinkedList<Instance> _tracked;
+        private readonly ILinkedList<object> _tracked;
 
         public Scope(
             ContractRegistry contractRegistry,
             Scope parentScope = null,
             string name = "scope",
-            ILinkedList<Instance> trackingCollection = null,
-            ICache<Contract, Instance> cachingCollection = null)
+            ILinkedList<object> trackingCollection = null,
+            ICache<Contract, object> instanceCache = null)
         {
             Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
-            InstanceCache = cachingCollection ?? new SimpleCache<Contract, Instance>(5);
-            _tracked = trackingCollection ?? new LinkedList<Instance>();
+            InstanceCache = instanceCache ?? new SimpleCache<Contract, object>(5);
+            _tracked = trackingCollection ?? new LinkedList<object>();
 
-            InstanceCache.Add(Contracts.ScopeContract, new Instance { Value = this, Contract = Contracts.ScopeContract });
+            InstanceCache.Add(Contracts.ScopeContract, this);
         }
 
-        public ICache<Contract, Instance> InstanceCache { get; }
+        public ICache<Contract, object> InstanceCache { get; }
         public ContractRegistry Contracts { get; }
 
         public Scope ParentScope { get; }
         public string Name { get; }
 
-        public void TrackInstance(Instance instance)
+        public void TrackInstance(Contract contract, object instance)
         {
-            if (instance.Contract.IsDisposal)
+            if (contract.IsDisposal)
             {
                 _tracked.Add(instance);                
             }
+        }
 
+        public object Resolve(Contract contract, Contract parentContract = null)
+        {
+            return contract.LifeSpan.Resolve(this, contract, parentContract);
         }
 
         public object Resolve(ServiceKey serviceKey)
         {
             var contract = Contracts.GetContract(serviceKey);
             return Resolve(contract);
-        }
-
-        public object Resolve(Contract contract, Contract parentContract = null)
-        {
-            try
-            {
-                return contract.LifeSpan.Resolve(this, contract, parentContract);
-            }
-            catch (Exception e)
-            {
-                throw new CannotResolveException(contract, e);
-            }
         }
 
         public TService Resolve<TService>(string serviceName = "default")
@@ -76,7 +68,7 @@
         {
             foreach (var instance in _tracked.GetAll())
             {
-                instance.Contract.DisposeInstance(instance.Value);
+                ((IDisposable) instance)?.Dispose();
             }
         }
 

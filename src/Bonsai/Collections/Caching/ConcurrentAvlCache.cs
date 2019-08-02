@@ -23,6 +23,19 @@ namespace Bonsai.Collections.Caching
             }
         }
 
+        public bool TryGet(TKey key, out TValue value)
+        {
+            _cacheLock.EnterReadLock();
+            try
+            {
+                return _innerCache.TryFind(key, out value);
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
+        }
+
         public void Add(TKey key, TValue value)
         {
             _cacheLock.EnterWriteLock();

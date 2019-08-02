@@ -3,8 +3,12 @@ namespace Bonsai.Planning
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
+    using System.Reflection.Emit;
     using Contracts;
+    using Exceptions;
     using RegistrationProcessing;
+    using Registry;
 
     public class DelegateBuilder
     {
@@ -30,40 +34,13 @@ namespace Bonsai.Planning
                 contract.CreateInstance = _constructs.First(x => x.CanSupport(context)).Create(context, contracts);
             }
 
-
-            if (typeof(IDisposable).IsAssignableFrom(context.ImplementedType))
-            {
-                contract.IsDisposal = true;
-                contract.DisposeInstance = Disposal;
-            }
-            else
-            {
-                contract.IsDisposal = false;
-                contract.DisposeInstance = NoOpDisposal;
-            }
+            contract.IsDisposal = typeof(IDisposable).IsAssignableFrom(context.ImplementedType);
         }
 
-        /// <summary>
-        /// this is a simple do nothing on disposal method
-        /// </summary>
-        /// <param name="instance">the instance which this method will execute against</param>
-        private static void NoOpDisposal(object instance)
-        {
-            //TODO: look to improve on how we track disposables.
-        }
-
-        /// <summary>
-        /// this will invoke the disposable on a method.
-        /// </summary>
-        /// <param name="instance">the instance which this method will execute against</param>
-        private static void Disposal(object instance)
-        {
-            ((IDisposable)instance).Dispose();
-        }
 
     }
 
-    /*
+    
     public class IlConstruct : IConstruct
     {
         public bool CanSupport(RegistrationContext context)
@@ -76,13 +53,18 @@ namespace Bonsai.Planning
             return null;
         }
 
-
+        /*
         public void asdf(RegistrationContext context)
         {
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
 
             DynamicMethod dmethod = new DynamicMethod(Guid.NewGuid().ToString(), context.ImplementedType,  new []{typeof(object[])}, false);
             var il = dmethod.GetILGenerator();
+
+
+
+
+
 
             
             int i = 0;
@@ -147,7 +129,7 @@ namespace Bonsai.Planning
 
             var ctorDelegate = (CreateObjectDelegate)dmethod.CreateDelegate(typeof(CreateObjectDelegate));
         }
-        
+*/        
         
 
         public void asd(RegistrationContext context)
@@ -191,5 +173,5 @@ namespace Bonsai.Planning
         }
         private delegate object CreateObjectDelegate(object[] parameters);   
     }
-    */
+    
 }

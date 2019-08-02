@@ -17,7 +17,7 @@ namespace Bonsai.Contracts
         private ImHashMap<ServiceKey, Contract> _contracts;
         private ImHashMap<Type, List<Contract>> _contractsByType;
         private volatile int _counter = 0;
-        private DependencySetupStrategy _dependencySetupStrategy;
+        private readonly DependencySetupStrategy _dependencySetupStrategy;
 
         public ContractRegistry(RegistrationRegistry registrationRegistry)
         { 
@@ -92,6 +92,7 @@ namespace Bonsai.Contracts
                 return entry;
             }
 
+            //this is mainly to handle generic types which we cannot pre-compile a delegate for.
             var contracts = _dependencySetupStrategy.HandleContractSetup(serviceKey, AllContracts);
             foreach (var contract in contracts)
             {

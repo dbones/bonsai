@@ -6,6 +6,7 @@ namespace Bonsai.Benchmarks
     using Castle.MicroKernel.SubSystems.Configuration;
     using Castle.Windsor;
     using LifeStyles;
+    using Microsoft.Extensions.DependencyInjection;
     using Models;
     using Registry;
     using ContainerBuilder = Bonsai.ContainerBuilder;
@@ -14,6 +15,10 @@ namespace Bonsai.Benchmarks
     {
         [Benchmark(Baseline = true)]
         public Service Bonsai() => _bonesScope.Resolve<Service>();
+
+        [Benchmark]
+        public Service Microsoft() => _msScope.ServiceProvider.GetService<Service>();
+
 
         [Benchmark]
         public Service Windsor() => _windsorContainer.Resolve<Service>();
@@ -31,7 +36,9 @@ namespace Bonsai.Benchmarks
         protected override Module SetupAutofac() => new AutofacModule();
        
         protected override Grace.DependencyInjection.IConfigurationModule SetupGrace() => new GraveModule();
-        
+
+        protected override IServiceCollectionModule SetupMs() => new MsModule();
+
         class BonsaiModule : IModule
         {
             public void Setup(ContainerBuilder builder)
@@ -42,7 +49,17 @@ namespace Bonsai.Benchmarks
                     .As(typeof(Repository<>)).Scoped<PerScope>();
             }
         }
-        
+
+        class MsModule : IServiceCollectionModule
+        {
+            public void Setup(IServiceCollection serviceCollection)
+            {
+                serviceCollection.AddScoped<Logger, Logger>();
+                serviceCollection.AddScoped<Service, Service>();
+                serviceCollection.AddScoped(typeof(Repository<>), typeof(Repository<>));
+            }
+        }
+
         class WindsorInstaller : IWindsorInstaller
         {
             public void Install(IWindsorContainer container, IConfigurationStore store)
