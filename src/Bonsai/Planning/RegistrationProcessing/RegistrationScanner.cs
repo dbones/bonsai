@@ -182,7 +182,7 @@ namespace Bonsai.Planning.RegistrationProcessing
                 }
 
                 var type = dependency?.RequiredType ?? parameter.ParameterType;
-                var name = dependency?.Named ?? "default";
+                var name = dependency?.Named;
 
                 var dependencyKey = new ServiceKey(type, name);
 

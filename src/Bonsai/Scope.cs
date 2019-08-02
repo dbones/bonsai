@@ -17,11 +17,11 @@
             ILinkedList<object> trackingCollection = null,
             ICache<Contract, object> instanceCache = null)
         {
-            Name = name;
             Contracts = contractRegistry ?? throw new ArgumentNullException(nameof(contractRegistry));
             ParentScope = parentScope;
-            InstanceCache = instanceCache ?? new SimpleCache<Contract, object>(5);
+            Name = name;
             _tracked = trackingCollection ?? new LinkedList<object>();
+            InstanceCache = instanceCache ?? new SimpleCache<Contract, object>(5);
 
             InstanceCache.Add(Contracts.ScopeContract, this);
         }
@@ -51,12 +51,12 @@
             return Resolve(contract);
         }
 
-        public TService Resolve<TService>(string serviceName = "default")
+        public TService Resolve<TService>(string serviceName = null)
         {
             return (TService) Resolve(new ServiceKey(typeof(TService), serviceName));
         }
 
-        public object Resolve(Type service, string name = "default")
+        public object Resolve(Type service, string name = null)
         {
             Code.Require(() => service != null, nameof(service));
             return Resolve(new ServiceKey(service, name));

@@ -39,7 +39,6 @@
         /// the types (interfaces/concrete types) this registration will support
         /// </summary>
         public HashSet<ServiceKey> Types { get; set; } = new HashSet<ServiceKey>();
-//        public Dictionary<string, Type> Types { get; set; } = new Dictionary<string, Type>();
         
 
         /// <summary>

@@ -13,7 +13,7 @@
         /// <param name="serviceName">the name of the service</param>
         /// <param name="service">the required service</param>
         /// <returns>instance of the service</returns>
-        object Resolve(Type service, string serviceName = "default");
+        object Resolve(Type service, string serviceName = null);
 
         /// <summary>
         /// resolves the service into an instance of the target type
@@ -21,7 +21,7 @@
         /// <typeparam name="TService">the required service</typeparam>
         /// <param name="serviceName">the name of the service</param>
         /// <returns>instance of the service</returns>
-        TService Resolve<TService>(string serviceName = "default");
+        TService Resolve<TService>(string serviceName = null);
 
     }
 }

@@ -19,7 +19,7 @@
             Registration.ImplementedType = serviceType.GetTypeInfo();
         }
 
-        public FluentBuilder As<TContract>(string name = "default") where TContract : class
+        public FluentBuilder As<TContract>(string name = null) where TContract : class
         {
             var contract = typeof(TContract).GetTypeInfo();
             if (!contract.IsAssignableFrom(Registration.ImplementedType))
@@ -31,7 +31,7 @@
             return this;
         }
         
-        public FluentBuilder As(Type serviceType, string name = "default") 
+        public FluentBuilder As(Type serviceType, string name = null) 
         {
             var contract = serviceType.GetTypeInfo();
             if (!contract.IsAssignableFrom(Registration.ImplementedType))
@@ -89,7 +89,7 @@
         {
         }
 
-        public FluentBuilder<TService> As<TContract>(string name = "default") where TContract : class
+        public FluentBuilder<TService> As<TContract>(string name = null) where TContract : class
         {
             var contract = typeof(TContract);
             if (!contract.IsAssignableFrom(Registration.ImplementedType))

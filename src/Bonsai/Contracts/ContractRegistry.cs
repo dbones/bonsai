@@ -36,7 +36,7 @@ namespace Bonsai.Contracts
         {
             foreach (var key in contract.ServiceKeys)
             {
-                if (key.ServiceName == "default" && _contracts.TryFind(key, out var oldDefault))
+                if (key.ServiceName == null && _contracts.TryFind(key, out var oldDefault))
                 {
                     _counter++;
                     _contracts = _contracts.Update(key, contract);

@@ -91,7 +91,7 @@ namespace Bonsai.Planning
                     {
                         if (planned == null) return false;
 
-                        var name = planned.Named ?? "default";
+                        var name = planned.Named;
                         var type = planned.RequiredType ?? parameter.ParameterType;
                         var key = new ServiceKey(type, name);
 
