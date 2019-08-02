@@ -13,6 +13,7 @@ namespace Bonsai.Contracts
     public class Contract :  IEquatable<Contract>
     {
         private readonly int _hash;
+
         public Contract(int id)
         {
             _hash = id;
@@ -28,11 +29,6 @@ namespace Bonsai.Contracts
         /// a delegate which will create an instance
         /// </summary>
         public CreateInstance CreateInstance { get; set; }
-
-        /// <summary>
-        /// a delegate which will can dispose of the instance
-        /// </summary>
-        public DisposeInstance DisposeInstance { get; set; }
 
         /// <summary>
         /// denotes if this type is disposable.
@@ -56,7 +52,7 @@ namespace Bonsai.Contracts
 
         public bool Equals(Contract other)
         {
-            return GetHashCode() == other?.GetHashCode();
+            return _hash == other?.GetHashCode();
         }
 
         public override int GetHashCode()
@@ -66,8 +62,8 @@ namespace Bonsai.Contracts
 
         public override bool Equals(object obj)
         {
-            var item = obj as Contract;
-            return GetHashCode() == item?.GetHashCode();
+            //var item = obj as Contract;
+            return _hash == obj?.GetHashCode();
         }
 
         public override string ToString()

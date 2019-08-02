@@ -5,7 +5,6 @@
     using Collections.LinkedLists;
     using Contracts;
     using Internal;
-    using Exceptions;
 
     public class Scope : IAdvancedScope
     {
