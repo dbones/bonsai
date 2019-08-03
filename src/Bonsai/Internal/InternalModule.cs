@@ -17,7 +17,6 @@ namespace Bonsai.Internal
                 .Scoped<Transient>();
 
             builder.Register(typeof(LazyService<>)).As(typeof(Lazy<>))
-                //.DependsOn(x => x.Constructor().ParameterWithType<Contract>(), (_, c, contract) => contract.ServiceKeys.First().Service.GetGenericArguments()[0])
                 .Scoped<Transient>();
             
         }

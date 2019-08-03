@@ -8,18 +8,23 @@ namespace Bonsai.Internal
     public class ServiceKey : IEquatable<ServiceKey>
     {
         private readonly int _hash;
-        public static int _defaultNameHash = "default".GetHashCode();
-        public static string _defaultName = "default";
+        public static readonly int DefaultNameHash = "default".GetHashCode();
+        public static readonly string DefaultName = "default";
 
         public ServiceKey(Type service, string serviceName = null)
         {
-            ServiceName = serviceName;
             Service = service;
 
             //simple hashing, is the quickest we have atm, but its not full proof
-            _hash = serviceName == null 
-                ? service.GetHashCode() * 31 + _defaultNameHash 
-                : service.GetHashCode() * 31 + serviceName.GetHashCode();
+            if (serviceName == null)
+            {
+                _hash = service.GetHashCode() * 31 + DefaultNameHash;
+            }
+            else
+            {
+                _hash = service.GetHashCode() * 31 + serviceName.GetHashCode();
+                ServiceName = serviceName;
+            }
         }
 
         public string ServiceName { get; }
@@ -27,7 +32,7 @@ namespace Bonsai.Internal
 
         public override string ToString()
         {
-            return $"{Service.FullName} ^_^ {ServiceName ?? _defaultName}";
+            return $"{Service.FullName} ^_^ {ServiceName ?? DefaultName}";
         }
 
         public bool Equals(ServiceKey other)

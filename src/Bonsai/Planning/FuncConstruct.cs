@@ -22,7 +22,6 @@ namespace Bonsai.Planning
             contracts = contracts.ToList();
 
             var ctor = context.InjectOnMethods.First(x => x.InjectOn == InjectOn.Constructor);
-            //var parentContract = contracts.First(x => x.ServiceKeys.Contains(context.Keys.First()));
 
             var createParams = new List<Expression>();
             var parameters = ctor.Parameters;
@@ -94,7 +93,6 @@ namespace Bonsai.Planning
                     unAssignedContractParam)
                 .CompileFast(); //this is used over Compile, as it performs a little faster
 
-            //object ParameterLessCtor(IAdvancedScope scope, Contract ct, Contract pct) => compiledCtor(scope, ct);
             return compiledCtor;
         }
     }

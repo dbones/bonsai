@@ -9,6 +9,7 @@
     public class Scope : IAdvancedScope
     {
         private readonly ILinkedList<object> _tracked;
+        private volatile bool _isDisposing = false;
 
         public Scope(
             ContractRegistry contractRegistry,
@@ -65,6 +66,9 @@
 
         void IDisposable.Dispose()
         {
+            if (_isDisposing) return;
+            _isDisposing = true;
+
             foreach (var instance in _tracked.GetAll())
             {
                 ((IDisposable) instance)?.Dispose();
