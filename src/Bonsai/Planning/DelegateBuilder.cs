@@ -9,7 +9,7 @@ namespace Bonsai.Planning
 
     public class DelegateBuilder
     {
-        public List<IConstruct> _constructs = new List<IConstruct>() { new IlConstruct(), new FuncConstruct() };
+        public List<IConstruct> _constructs = new List<IConstruct>() { new IlConstruct() /*new FuncConstruct()*/ };
 
         public void SetDelegates(ICollection<RegistrationContext> contexts, ICollection<Contract> contracts, Contract contract)
         {
