@@ -1,6 +1,5 @@
 ﻿namespace Bonsai.LifeStyles
 {
-    using System.Runtime.InteropServices.ComTypes;
     using Contracts;
 
     public class PerScope : ILifeSpan

@@ -10,7 +10,8 @@ namespace Bonsai.Tests.Lifestyles.Transient
     [Subject("TransientLifeScope")]
     public class When_resolving_a_service 
     {
-        Establish context = () => {
+        Establish context = () => 
+        {
             var builder = new ContainerBuilder();
             builder.SetupModules(new RegisterContracts());
             var container = builder.Create();

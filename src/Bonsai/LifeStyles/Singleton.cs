@@ -5,17 +5,12 @@
 
     public class Singleton : ILifeSpan
     {
-        private readonly string _name;
+        private const string Name = "singleton";
         private IAdvancedScope _singletonScope;
-
-        public Singleton()
-        {
-            _name = "singleton";
-        }
 
         public object Resolve(IAdvancedScope currentScope, Contract contract, Contract parentContract)
         {
-            var scope = GetNamedScope(currentScope, _name);
+            var scope = GetNamedScope(currentScope, Name);
             if (scope.InstanceCache.TryGet(contract, out var entry)) return entry;
 
             lock (_singletonScope)
