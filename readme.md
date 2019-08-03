@@ -89,15 +89,16 @@ InvocationCount=5000  UnrollFactor=50
 |   Grace |     50.66 ns |   3.690 ns |    10.59 ns |     48.50 ns |  0.46 |    0.15 |    * |           - |           - |           - |               104 B |
 
 
-
 Things we have tired or have yet to try:
 
-* precomiling all delegates - done
-* use a linked list instead of a stack - done
-* remove dependency on the key dictionary (as much as possible) - done 
-* replace dictionary with immutable AVL - done
-* get hash code for service keys, not using string concat - done
-* track only disposables - done
-* replace Concurancy with Out of the box concurancy collection
-* look into interlock instead of the lightweigh read write lock
-* look into direct IL
+* precomiling all delegates - **done** - positive improvement
+* use a linked list instead of a stack - **done** - positive improvement
+* remove dependency on the key dictionary (as much as possible) - **done** - positive improvement
+* replace dictionary with immutable AVL - **done** - positive improvement
+* get hash code for service keys, not using string concat - **done** - positive improvement
+* track only disposables - **done** - positive improvement
+* replace Concurrency with Out of the box concurrency collection - **skipped**
+* look into interlock instead of the light weight read write lock - **skipped**
+* look into direct IL - **done**, must be a better way to do it though
+* try not to need any locking in the code - *under review*
+* use of ServiceKey (annoyingly this is a core way to allow the service to be named)
