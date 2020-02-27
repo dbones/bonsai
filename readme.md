@@ -6,8 +6,6 @@
 
 A small .NET IoC container, written in .NET Standard 2.
 
-Currently a work in progress. ( brand new :) )
-
 # Features 
 
 * Constructor injection
